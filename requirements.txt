@@ -14,7 +14,6 @@ py-cpuinfo==7.0.0
 pyparsing==2.4.7
 pyperclip==1.8.0
 pytest==6.0.2
-pytest-benchmark==3.2.3
 pytest-rerunfailures==9.1
 requests==2.24.0
 selenium==3.141.0

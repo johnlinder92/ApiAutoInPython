@@ -1181,7 +1181,7 @@ def test_AllWorkflowControlSets():
         print(response.text.encode('utf8'))
     assert response.status_code == 200
 @pytest.mark.queries
-def test_WorkTimeByPersonId(benchmark):
+def test_WorkTimeByPersonId():
     requestdata = {
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
   "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
@@ -1202,6 +1202,6 @@ def test_WorkTimeByPersonId(benchmark):
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    benchmark(time.sleep, 0.02)
+
     assert response.status_code == 200
 
