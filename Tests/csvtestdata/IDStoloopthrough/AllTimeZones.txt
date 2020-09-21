@@ -1,0 +1,12 @@
+Etc/UTC
+Europe/London
+Europe/Moscow
+Europe/Berlin
+Asia/Shanghai
+Asia/Singapore
+Asia/Dubai
+America/Los_Angeles
+America/Denver
+America/New_York
+Australia/Sydney
+Africa/Casablanca
