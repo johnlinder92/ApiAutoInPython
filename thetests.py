@@ -1,5 +1,6 @@
 import csv
 import datetime
+from datetime import timedelta
 import json
 import time
 
@@ -16,135 +17,24 @@ apitoken = "Y2JjYzk3ZmI4OWQ0NGYwZWJmYThjOTkyOTNlMTk2OWQ2NDZmNzA0ZDAzM2E0NWRlOWVl
 
 
 #date functions to make requests work over time
-
-def gettodaysdatewith0m0d_zeroformats():
-    global date
-    date = datetime.datetime.now()
-    theday = int(date.day)
-    themonth = int(date.month)
-    if theday < 10 and themonth < 10:
-        year = str(date.year)
-        month = str(date.month)
-        day = str(date.day)
-        total = year + "-0" + month + "-0" + day
-        return total
-    elif theday > 9 and themonth < 10:
-        year = str(date.year)
-        month = str(date.month)
-        day = str(date.day)
-        total = year + "-0" + month + "-" + day
-        return total
-    elif theday < 10 and themonth > 9:
-        year = str(date.year)
-        month = str(date.month)
-        day = str(date.day)
-        total = year + "-" + month + "-0" + day
-        return total
-    elif theday > 9 and themonth > 9:
-        year = str(date.year)
-        month = str(date.month)
-        day = str(date.day)
-        total = year + "-" + month + "-" + day
-        return total
+#timedelta
 def getdateonemonthahead_zeroformats():
-    date = datetime.datetime.now()
-    themonth = int(date.month)
-    theday = int(date.day)
-    if themonth != 12 and theday > 9:
-
-        monthstr = str(themonth +1)
-
-        day2 = str(date.day)
-        year = str(date.year)
-        total = year + "-" +monthstr + "-" + day2
-
-        return total
-    elif themonth == 12 and theday > 9:
-
-        extrayear = int(date.year)
-        yearstr = str(extrayear + 1)
-        day = str(date.day)
-
-        total = yearstr + "-01-" + day
-        return total
-    elif themonth != 12 and theday < 10:
-        monthstr = str(themonth + 1)
-        yearstr=str(date.year)
-        day = str(date.day)
-
-
-        total = yearstr + "-" + monthstr + "-0" + day
-
-        return total
-    elif themonth == 12 and theday < 10:
-        extrayear = int(date.year)
-        yearstr = str(extrayear + 1)
-        day = str(date.day)
-
-        total = yearstr + "-01-0" + day
-        return total
+    now = datetime.datetime.now()
+    diff = datetime.timedelta(days=30)
+    future = now + diff
+    result = future.strftime("%Y-%m-%d")
+    return result
 def getdatetwomonthsahead_zeroformats():
-    date = datetime.datetime.now()
-    themonth = int(date.month)
-    theday = int(date.day)
-    if themonth < 11 and theday < 10:
+    now = datetime.datetime.now()
+    diff = datetime.timedelta(days=60)
+    future = now + diff
+    result = future.strftime("%Y-%m-%d")
+    return result
+def gettodaysdatewith0m0d_zeroformats():
+    now = datetime.datetime.now()
+    result = now.strftime("%Y-%m-%d")
+    return result
 
-        monthstr = str(themonth +2)
-        day2 = str(date.day)
-        year = str(date.year)
-        total = year + "-" +monthstr + "-0" + day2
-
-        return total
-    elif themonth < 11 and theday > 9:
-
-        monthstr = str(themonth + 2)
-        day2 = str(date.day)
-        year = str(date.year)
-        total = year + "-" + monthstr + "-" + day2
-
-        return total
-
-    elif themonth == 11 and theday < 10:
-
-
-        extrayear= int(date.year)
-        yearstr=str(extrayear+1)
-        day = str(date.day)
-
-
-        total = yearstr + "-1-0" + day
-
-        return total
-    elif themonth == 11 and theday > 9:
-
-         extrayear = int(date.year)
-         yearstr = str(extrayear + 1)
-         day = str(date.day)
-
-         total = yearstr + "-1-" + day
-
-         return total
-    elif themonth == 12 and theday < 10:
-
-         extrayear = int(date.year)
-         yearstr = str(extrayear + 1)
-         day = str(date.day)
-
-         total = yearstr + "-2-0" + day
-
-         return total
-    elif themonth == 12 and theday > 9:
-
-         extrayear = int(date.year)
-         yearstr = str(extrayear + 1)
-         day = str(date.day)
-
-         total = yearstr + "-2-" + day
-
-         return total
-    else:
-         hmm= "error"
-         return hmm
 
 #environment variables
 # fullDayAbsenceRequestID obtained inside test_AddFullDayAbsenceRequest
