@@ -3,7 +3,6 @@ import datetime
 from datetime import timedelta
 import json
 import time
-
 from selenium.webdriver.chrome.options import Options
 import clipboard
 import pytest
@@ -14,8 +13,6 @@ from selenium.webdriver.common.by import By
 
 baseurl = "https://qaeurc02.teleopticloud.com/api"
 apitoken = "Y2JjYzk3ZmI4OWQ0NGYwZWJmYThjOTkyOTNlMTk2OWQ2NDZmNzA0ZDAzM2E0NWRlOWVlODM4ZTdmZTAyYTI0YQ=="
-
-
 #date functions to make requests work over time
 #timedelta
 def getdate30daysahead_zeroformats():
@@ -307,6 +304,7 @@ def test_AddOvertimeRequest(TimeZoneId,OverTimeType,Subject):
        print("Internet connection down")
    else:
        print(response.text.encode('utf8'))
+
 
    z = json.loads(response.text.encode('utf8'))
    global overTimeRequestId
