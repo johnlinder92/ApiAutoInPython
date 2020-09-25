@@ -633,6 +633,72 @@ def test_SetSchedulesForPerson_MultipleLayersOfActivitysWithinDateAndMultipleSch
 
     assert response.status_code == 200
 
+with open('csvtestdata/addorremovemeetingtimezones.csv') as f:
+ reader = csv.reader(f)
+ dataforaddmeetingtimezones = list(reader)
+
+#using firstrow of that list to remove all created meetings
+
+ dataforremovemeetingtimezones = []
+ for x in dataforaddmeetingtimezones:
+    dataforremovemeetingtimezones.append(x[0])
+@pytest.mark.command
+@pytest.mark.parametrize("ExternalMeetingId, StartMeetingHour, EndMeetingHour, ActivityId, TimeZoneId, ScenarioId, Participant1, Participant2, Participant3, Participant4, Participant5, Participant6, Participant7, Participant8, Participant9, Participant10", dataforaddmeetingtimezones)
+def test_AddMeeting_AllTimeZonesLoopThrough(ExternalMeetingId, StartMeetingHour, EndMeetingHour, ActivityId, TimeZoneId, ScenarioId, Participant1, Participant2, Participant3, Participant4, Participant5, Participant6, Participant7, Participant8, Participant9, Participant10):
+    requestdata = {
+  "TimeZoneId": TimeZoneId,
+  "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
+  "ScenarioId": ScenarioId,
+  "ExternalMeetingId":ExternalMeetingId,
+  "Participants": [
+    Participant1, Participant2, Participant3, Participant4, Participant5, Participant6, Participant7, Participant8, Participant9, Participant10
+  ],
+  "ActivityId": ActivityId,
+  "Period": {
+    "StartTime": getdate30daysahead_zeroformats()+ "T"+StartMeetingHour+":00:00.000",
+    "EndTime": getdate30daysahead_zeroformats()+"T"+EndMeetingHour+":00:00.000"
+  },
+  "Title": "TimeZoneTest",
+  "Location": "Stockholm",
+  "Agenda": "meetingjohntest"
+}
+    payload = json.dumps(requestdata)
+
+    headers = {
+        'Authorization': apitoken,
+        'Content-Type': 'application/json'
+    }
+
+    try:
+        response = requests.request("POST", baseurl + "/command/AddMeeting", headers=headers, data=payload)
+    except requests.exceptions.ConnectionError:
+        print("Internet connection down")
+    else:
+        print(response.text.encode('utf8'))
+
+    assert response.status_code == 200
+
+@pytest.mark.command
+@pytest.mark.parametrize("ExternalMeetingId", dataforremovemeetingtimezones)
+def test_RemoveMeeting_Timezones(ExternalMeetingId):
+    requestdata = {
+  "ExternalMeetingId": ExternalMeetingId
+}
+    payload = json.dumps(requestdata)
+    headers = {
+        'Authorization': apitoken,
+        'Content-Type': 'application/json'
+    }
+
+    try:
+        response = requests.request("POST", baseurl + "/command/RemoveMeeting", headers=headers, data=payload)
+
+    except requests.exceptions.ConnectionError:
+        print("Internet connection down")
+    else:
+        print(response.text.encode('utf8'))
+
+    assert response.status_code == 200
 
 
 # below tests are queries
