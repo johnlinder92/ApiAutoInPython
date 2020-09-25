@@ -633,6 +633,7 @@ def test_SetSchedulesForPerson_MultipleLayersOfActivitysWithinDateAndMultipleSch
 
     assert response.status_code == 200
 
+#The timezonestests are dependant on the users in https://qaeurc02.teleopticloud.com environment
 with open('csvtestdata/addorremovemeetingtimezones.csv') as f:
  reader = csv.reader(f)
  dataforaddmeetingtimezones = list(reader)
