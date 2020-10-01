@@ -111,6 +111,53 @@ def test_seleniumtogetAPItoken():
     apitoken = apitoken2
 '''
 #these test are commands
+
+'''with open('csvtestdata/test_AddAgent.csv') as f:
+ reader = csv.reader(f)
+ addAgentData= list(reader)
+@pytest.mark.command
+@pytest.mark.parametrize("TimeZoneId, Contract, ContractSchedule, PartTimePercentage, Role, WorkflowControlSet, ShiftBag, BudgetGroup ", addAgentData)
+def test_AddAgent(TimeZoneId, Contract, ContractSchedule, PartTimePercentage, Role, WorkflowControlSet, ShiftBag, BudgetGroup):
+
+     requestdata = {
+  "TimeZoneId": TimeZoneId,
+  "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
+  "FirstName": "JohnTest",
+  "LastName": "TestJohn",
+  "Email": "",
+  "EmploymentNumber": "",
+  "StartDate": gettodaysdatewith_zeroformats(),
+  "ApplicationLogon": "",
+  #"Identity": "Agent",
+  "Site": "Stockholm",
+  "Team": "Stockholm 1",
+  "Contract": Contract,
+  "ContractSchedule": ContractSchedule,
+  "PartTimePercentage": PartTimePercentage,
+  #"Culture": "string",
+  "Roles": [
+    Role
+  ],
+  "WorkflowControlSet": WorkflowControlSet,
+  "ShiftBag": ShiftBag,
+  "BudgetGroup": BudgetGroup,
+  "FirstDayOfWeek": 0
+}
+     payload = json.dumps(requestdata)
+     headers = {
+         'Authorization': apitoken,
+         'Content-Type': 'application/json'
+     }
+     try:
+        response = requests.request("POST", baseurl + "/command/AddAgent", headers=headers, data=payload)
+     except requests.exceptions.ConnectionError:
+         print("Internet connection down")
+     else:
+         print(response.text.encode('utf8'))
+
+     assert response.status_code == 200
+'''
+
 with open('csvtestdata/test_AddFullDayAbsence.csv') as f:
  reader = csv.reader(f)
  dataaddfulldayabsence= list(reader)
