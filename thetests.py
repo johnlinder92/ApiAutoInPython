@@ -9,7 +9,7 @@ import pytest
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
+from jsonschema import validate, Draft3Validator
 
 baseurl = "https://qaeurc02.teleopticloud.com/api"
 apitoken = "Y2JjYzk3ZmI4OWQ0NGYwZWJmYThjOTkyOTNlMTk2OWQ2NDZmNzA0ZDAzM2E0NWRlOWVlODM4ZTdmZTAyYTI0YQ=="
@@ -55,7 +55,12 @@ def gettodaysdatewith_zeroformats():
     now = datetime.datetime.now()
     result = now.strftime("%Y-%m-%d")
     return result
-
+def getdate7daysahead_zeroformats():
+    now = datetime.datetime.now()
+    diff = datetime.timedelta(days=7)
+    future = now + diff
+    result = future.strftime("%Y-%m-%d")
+    return result
 
 #environment variables
 # fullDayAbsenceRequestID obtained inside test_AddFullDayAbsenceRequest
@@ -165,12 +170,25 @@ def test_AddFullDayAbsenceRequest(AbsenceId,Subject):
     else:
         print(response.text.encode('utf8'))
 
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
     global fullDayAbsenceRequestID
 
-    fullDayAbsenceRequestID = o.get("Id")
+    fullDayAbsenceRequestID = resp.get("Id")
 
     assert response.status_code == 200
+
+    schema = {
+    "type": "object",
+    "properties": {
+    "StatusCode": {"type": "number"},
+    "Id": {"type": "string"},
+    "Message": {"type": "null"},
+    },
+    }
+    e = Draft3Validator(schema)
+    errors = sorted(e.iter_errors(resp), key=lambda e: e.path)
+    print(errors)
+    validate(resp, schema)
 
 with open('csvtestdata/test_AddIntradayAbsenceRequest.csv') as f:
     reader = csv.reader(f)
@@ -203,6 +221,19 @@ def test_AddIntradayAbsenceRequest(Subject,Message,TimeZoneID,AbsenceID):
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
+    resp = json.loads(response.text.encode('utf8'))
+    schema = {
+        "type": "object",
+        "properties": {
+            "StatusCode": {"type": "number"},
+            "Id": {"type": "string"},
+            "Message": {"type": "null"},
+        },
+    }
+    e = Draft3Validator(schema)
+    errors = sorted(e.iter_errors(resp), key=lambda e: e.path)
+    print(errors)
+    validate(resp, schema)
 
 with open('csvtestdata/addorremovemeeting.csv') as f:
  reader = csv.reader(f)
@@ -306,10 +337,22 @@ def test_AddOvertimeRequest(TimeZoneId,OverTimeType,Subject):
        print(response.text.encode('utf8'))
 
 
-   z = json.loads(response.text.encode('utf8'))
+   resp = json.loads(response.text.encode('utf8'))
    global overTimeRequestId
-   overTimeRequestId = z.get("Id")
+   overTimeRequestId = resp.get("Id")
    assert response.status_code == 200
+   schema = {
+       "type": "object",
+       "properties": {
+           "StatusCode": {"type": "number"},
+           "Id": {"type": "string"},
+           "Message": {"type": "null"},
+       },
+   }
+   e = Draft3Validator(schema)
+   errors = sorted(e.iter_errors(resp), key=lambda e: e.path)
+   print(errors)
+   validate(resp, schema)
 
 with open('csvtestdata/test_AddPartDayAbsence.csv') as f:
     reader = csv.reader(f)
@@ -391,6 +434,20 @@ def test_AddTeam():
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
+
+    resp = json.loads(response.text.encode('utf8'))
+    schema = {
+        "type": "object",
+        "properties": {
+            "StatusCode": {"type": "number"},
+            "Id": {"type": "string"},
+            "Message": {"type": "null"},
+        },
+    }
+    e = Draft3Validator(schema)
+    errors = sorted(e.iter_errors(resp), key=lambda e: e.path)
+    print(errors)
+    validate(resp, schema)
 
 with open('csvtestdata/test_RemovePersonAbsence.csv') as f:
     reader = csv.reader(f)
@@ -723,6 +780,53 @@ def test_AllAbsences():
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Id": {
+                "type": "string"
+            },
+            "IsNew": {
+                "type": "boolean"
+            },
+            "IsPending": {
+                "type": "boolean"
+            },
+            "IsWaitlisted": {
+                "type": "boolean"
+            },
+            "IsAlreadyAbsent": {
+                "type": "boolean"
+            },
+            "IsAutoAproved": {
+                "type": "boolean"
+            },
+            "IsAutoDenied": {
+                "type": "boolean"
+            },
+            "IsCancelled": {
+                "type": "boolean"
+            },
+            "IsDeleted": {
+                "type": "boolean"
+            },
+            "IsDenied": {
+                "type": "boolean"
+            },
+            "IsExpired": {
+                "type": "boolean"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
+
+
 @pytest.mark.queries
 def test_AbsencePossibilityByPersonId():
     requestdata = {
@@ -748,6 +852,9 @@ def test_AbsencePossibilityByPersonId():
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
+
+
 @pytest.mark.queries
 def test_AbsenceRequestById():
     requestdata = {
@@ -767,6 +874,53 @@ def test_AbsenceRequestById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+  "type": "object",
+  "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "IsNew": {
+          "type": "boolean"
+        },
+        "IsPending": {
+          "type": "boolean"
+        },
+        "IsWaitlisted": {
+          "type": "boolean"
+        },
+        "IsAlreadyAbsent": {
+          "type": "boolean"
+        },
+        "IsAutoAproved": {
+          "type": "boolean"
+        },
+        "IsAutoDenied": {
+          "type": "boolean"
+        },
+        "IsCancelled": {
+          "type": "boolean"
+        },
+        "IsDeleted": {
+          "type": "boolean"
+        },
+        "IsDenied": {
+          "type": "boolean"
+        },
+        "IsExpired": {
+          "type": "boolean"
+        }
+      }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
+
+
 @pytest.mark.queries
 def test_AbsenceRequestRulesByPersonId():
     requestdata = {
@@ -790,6 +944,7 @@ def test_AbsenceRequestRulesByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_AllActivities():
     requestdata = {
@@ -808,6 +963,7 @@ def test_AllActivities():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_PermissionByPerson():
     requestdata = {
@@ -827,6 +983,7 @@ def test_PermissionByPerson():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_AllBusinessUnits():
     requestdata = {}
@@ -843,6 +1000,7 @@ def test_AllBusinessUnits():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_AllDayOffTemplates():
     requestdata = {
@@ -861,6 +1019,7 @@ def test_AllDayOffTemplates():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_OvertimePossibilityByPersonId():
     requestdata = {
@@ -868,7 +1027,7 @@ def test_OvertimePossibilityByPersonId():
   "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
   "Period": {
     "StartDate": gettodaysdatewith_zeroformats(),
-    "EndDate": getdate30daysahead_zeroformats()
+    "EndDate": getdate7daysahead_zeroformats()
   }
 }
     payload = json.dumps(requestdata)
@@ -883,7 +1042,8 @@ def test_OvertimePossibilityByPersonId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
+    assert response.status_code == 200 or 204
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_OvertimeRequestConfigurationByPersonId():
     requestdata = {
@@ -904,6 +1064,7 @@ def test_OvertimeRequestConfigurationByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_OvertimeRequestById():
     requestdata = {
@@ -923,6 +1084,7 @@ def test_OvertimeRequestById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_PersonAccountsByPersonId():
     requestdata = {
@@ -943,6 +1105,7 @@ def test_PersonAccountsByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_PeopleByEmploymentNumbers():
     requestdata = {  "EmploymentNumbers": [
@@ -963,6 +1126,7 @@ def test_PeopleByEmploymentNumbers():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_PeopleByTeamId():
     requestdata = {
@@ -982,6 +1146,7 @@ def test_PeopleByTeamId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_PersonById():
     requestdata = {
@@ -1001,6 +1166,7 @@ def test_PersonById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.xfail(reason="known issue(if you set WFM_API_UseScope_91609 toggle to false and restart WFM system it works)")
 @pytest.mark.queries
 def test_ScheduleAbsencesByPersonIds():
@@ -1027,6 +1193,7 @@ def test_ScheduleAbsencesByPersonIds():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_SchedulesByChangeDate():
     requestdata = {
@@ -1049,6 +1216,7 @@ def test_SchedulesByChangeDate():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_AllScheduleChangesListenerSubscription():
     requestdata = {
@@ -1067,6 +1235,7 @@ def test_AllScheduleChangesListenerSubscription():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_ScheduleByPersonId():
     requestdata = {
@@ -1090,6 +1259,7 @@ def test_ScheduleByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_ScheduleByPersonIds():
     requestdata = {
@@ -1115,6 +1285,7 @@ def test_ScheduleByPersonIds():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 #The scenario ID in test below has to be added, cannot find one that works in a fresh installation
 @pytest.mark.queries
 def test_ScheduleByTeamId():
@@ -1140,6 +1311,7 @@ def test_ScheduleByTeamId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+
 @pytest.mark.queries
 def test_AllShiftCategories():
     requestdata = {
@@ -1158,6 +1330,7 @@ def test_AllShiftCategories():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_AllSites():
     requestdata = {
@@ -1176,6 +1349,7 @@ def test_AllSites():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_AllTeamsWithAgents():
     requestdata = {
@@ -1198,6 +1372,7 @@ def test_AllTeamsWithAgents():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_TeamById():
     requestdata = {
@@ -1217,6 +1392,7 @@ def test_TeamById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_TeamsBySiteId():
     requestdata = {
@@ -1236,6 +1412,7 @@ def test_TeamsBySiteId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_PermissionByPersonId():
     requestdata = {
@@ -1256,6 +1433,7 @@ def test_PermissionByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_AllTimeZones():
     requestdata = {
@@ -1274,6 +1452,7 @@ def test_AllTimeZones():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_UserById():
     requestdata = {
@@ -1292,6 +1471,7 @@ def test_UserById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_WeeklyMaxWorkTimeByPersonId():
     requestdata = {
@@ -1312,6 +1492,7 @@ def test_WeeklyMaxWorkTimeByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_AllWorkflowControlSets():
     requestdata = {
@@ -1330,6 +1511,7 @@ def test_AllWorkflowControlSets():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 @pytest.mark.queries
 def test_WorkTimeByPersonId():
     requestdata = {
@@ -1354,4 +1536,5 @@ def test_WorkTimeByPersonId():
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
+    o = json.loads(response.text.encode('utf8'))
 
