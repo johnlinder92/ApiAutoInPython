@@ -45,6 +45,12 @@ def getdate36daysahead_zeroformats():
     future = now + diff
     result = future.strftime("%Y-%m-%d")
     return result
+def getdate45daysahead_zeroformats():
+    now = datetime.datetime.now()
+    diff = datetime.timedelta(days=45)
+    future = now + diff
+    result = future.strftime("%Y-%m-%d")
+    return result
 def getdate60daysahead_zeroformats():
     now = datetime.datetime.now()
     diff = datetime.timedelta(days=60)
@@ -833,36 +839,29 @@ def test_AllAbsences():
         "type": "object",
         "properties": {
             "Id": {
+                "type": "string",
+                        "minLength": 25,
+                        "maxLength": 50
+            },
+            "Priority": {
+                "type": "integer"
+            },
+            "Name": {
                 "type": "string"
             },
-            "IsNew": {
+            "Requestable": {
                 "type": "boolean"
             },
-            "IsPending": {
+            "InWorkTime": {
                 "type": "boolean"
             },
-            "IsWaitlisted": {
+            "InPaidTime": {
                 "type": "boolean"
             },
-            "IsAlreadyAbsent": {
-                "type": "boolean"
+            "PayrollCode": {
+                "type": "string"
             },
-            "IsAutoAproved": {
-                "type": "boolean"
-            },
-            "IsAutoDenied": {
-                "type": "boolean"
-            },
-            "IsCancelled": {
-                "type": "boolean"
-            },
-            "IsDeleted": {
-                "type": "boolean"
-            },
-            "IsDenied": {
-                "type": "boolean"
-            },
-            "IsExpired": {
+            "Confidential": {
                 "type": "boolean"
             }
         }
@@ -881,7 +880,7 @@ def test_AbsencePossibilityByPersonId():
   "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
   "Period": {
     "StartDate": gettodaysdatewith_zeroformats(),
-    "EndDate": getdate30daysahead_zeroformats()
+    "EndDate": getdate45daysahead_zeroformats()
   }
 }
     payload = json.dumps(requestdata)
@@ -991,7 +990,32 @@ def test_AbsenceRequestRulesByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]["Projection"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Period": {
+                "type": "object"
+            },
+            "RequestProcess": {
+                "type": "string"
+            },
+            "PersonAccountValidator": {
+                "type": "string"
+            },
+            "StaffingThresholdValidator": {
+                "type": "string"
+            },
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
+
+
 @pytest.mark.queries
 def test_AllActivities():
     requestdata = {
@@ -1010,7 +1034,53 @@ def test_AllActivities():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Id": {
+                "type": "string"
+            },
+            "Name": {
+                "type": "string"
+            },
+            "InReadyTime": {
+                "type": "boolean"
+            },
+            "RequiresSkill": {
+                "type": "boolean"
+            },
+            "InWorkTime": {
+                "type": "boolean"
+            },
+            "InPaidTime": {
+                "type": "boolean"
+            },
+            "ReportLevelDetail": {
+                "type": "string"
+            },
+            "RequiresSeat": {
+                "type": "boolean"
+            },
+            "PayrollCode": {
+                "type": "string"
+            },
+            "AllowOverwrite": {
+                "type": "boolean"
+            },
+            "DisplayColor": {
+                "type": "string"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
+
+
 @pytest.mark.queries
 def test_PermissionByPerson():
     requestdata = {
@@ -1030,7 +1100,29 @@ def test_PermissionByPerson():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Id": {
+                "type": "string"
+            },
+            "FunctionCode": {
+                "type": "string"
+            },
+            "FunctionPath": {
+                "type": "string"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
+
+
 @pytest.mark.queries
 def test_AllBusinessUnits():
     requestdata = {}
@@ -1047,7 +1139,24 @@ def test_AllBusinessUnits():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Id": {
+                "type": "string"
+            },
+            "Name": {
+                "type": "string"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_AllDayOffTemplates():
     requestdata = {
@@ -1066,7 +1175,24 @@ def test_AllDayOffTemplates():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Id": {
+                "type": "string"
+            },
+            "Name": {
+                "type": "string"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_OvertimePossibilityByPersonId():
     requestdata = {
@@ -1090,7 +1216,24 @@ def test_OvertimePossibilityByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200 or 204
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]["Period"]
+    schema = {
+        "type": "object",
+        "properties": {
+            "StartTime": {
+                "type": "string"
+            },
+            "EndTime": {
+                "type": "string"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_OvertimeRequestConfigurationByPersonId():
     requestdata = {
@@ -1111,7 +1254,48 @@ def test_OvertimeRequestConfigurationByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "OvertimeProbabilityEnabled": {
+                "type": "boolean"
+            },
+            "MaxOvertimeRestriction": {
+                "type": "object"
+            },
+            "MinConsecutiveLunchTimeRestriction": {
+                "type": "object"
+            },
+            "MaxContinuousWorkTimeRestriction": {
+                "type": "object"
+            } ,
+            "MinRestTimeThresholdRestriction": {
+                "type": "object"
+            },
+            "CancellationThresholdInMinute": {
+                "type": "integer"
+            },
+            "OpenPeriod": {
+                "type": "object"
+            },
+            "AutoGrant": {
+                "type": "object"
+            },
+            "ContractRestriction": {
+                "type": "object"
+            },
+            "OvertimeTypes": {
+                "type": "array"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_OvertimeRequestById():
     requestdata = {
