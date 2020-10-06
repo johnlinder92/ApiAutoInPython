@@ -14,7 +14,6 @@ from jsonschema import validate, Draft3Validator
 baseurl = "https://qaeurc02.teleopticloud.com/api"
 apitoken = "Y2JjYzk3ZmI4OWQ0NGYwZWJmYThjOTkyOTNlMTk2OWQ2NDZmNzA0ZDAzM2E0NWRlOWVlODM4ZTdmZTAyYTI0YQ=="
 #date functions to make requests work over time
-#timedelta
 def getdate30daysahead_zeroformats():
     now = datetime.datetime.now()
     diff = datetime.timedelta(days=30)
@@ -116,8 +115,8 @@ def test_seleniumtogetAPItoken():
     global apitoken
     apitoken = apitoken2
 '''
-#these test are commands
 
+#these test are commands
 '''with open('csvtestdata/test_AddAgent.csv') as f:
  reader = csv.reader(f)
  addAgentData= list(reader)
@@ -871,8 +870,6 @@ def test_AllAbsences():
     errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
     print(errors)
     validate(dict, schema)
-
-
 @pytest.mark.queries
 def test_AbsencePossibilityByPersonId():
     requestdata = {
@@ -899,8 +896,6 @@ def test_AbsencePossibilityByPersonId():
 
     assert response.status_code == 200
     o = json.loads(response.text.encode('utf8'))
-
-
 @pytest.mark.queries
 def test_AbsenceRequestById():
     requestdata = {
@@ -965,8 +960,6 @@ def test_AbsenceRequestById():
     errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
     print(errors)
     validate(dict, schema)
-
-
 @pytest.mark.queries
 def test_AbsenceRequestRulesByPersonId():
     requestdata = {
@@ -1014,8 +1007,6 @@ def test_AbsenceRequestRulesByPersonId():
     errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
     print(errors)
     validate(dict, schema)
-
-
 @pytest.mark.queries
 def test_AllActivities():
     requestdata = {
@@ -1079,8 +1070,6 @@ def test_AllActivities():
     errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
     print(errors)
     validate(dict, schema)
-
-
 @pytest.mark.queries
 def test_PermissionByPerson():
     requestdata = {
@@ -1121,8 +1110,6 @@ def test_PermissionByPerson():
     errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
     print(errors)
     validate(dict, schema)
-
-
 @pytest.mark.queries
 def test_AllBusinessUnits():
     requestdata = {}
@@ -1315,7 +1302,36 @@ def test_OvertimeRequestById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "PersonId": {
+                "type": "string"
+            },
+            "Period": {
+                "type": "object"
+            },
+            "OvertimeType": {
+                "type": "string"
+            },
+            "Subject": {
+                "type": "string"
+            },
+            "Message": {
+                "type": "string"
+            },
+            "Status": {
+                "type": "object"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_PersonAccountsByPersonId():
     requestdata = {
@@ -1336,7 +1352,30 @@ def test_PersonAccountsByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "TrackedBy": {
+                "type": "string"
+            },
+            "Period": {
+                "type": "object"
+            },
+            "Remaining": {
+                "type": "integer"
+            },
+            "AbsenceId": {
+                "type": "string"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_PeopleByEmploymentNumbers():
     requestdata = {  "EmploymentNumbers": [
@@ -1357,11 +1396,58 @@ def test_PeopleByEmploymentNumbers():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Id": {
+                "type": "string"
+            },
+            "FirstName": {
+                "type": "string"
+            },
+            "LastName": {
+                "type": "string"
+            },
+            "EmploymentNumber": {
+                "type": "string"
+            },
+            "Email": {
+                "type": "string"
+            },
+            "DisplayName": {
+                "type": "string"
+            },
+            "TimeZoneId": {
+                "type": "string"
+            },
+            "BusinessUnitId": {
+                "type": "string"
+            },
+            "SiteId": {
+                "type": "string"
+            },
+            "TeamId": {
+                "type": "string"
+            },
+            "WorkflowControlSetId": {
+                "type": "string"
+            },
+            "FirstDayOfWeek": {
+                "type": "integer"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_PeopleByTeamId():
     requestdata = {
-  "TeamId": "30E6530B-3271-470C-852F-AA6C00E7E732",
+  "TeamId": "B923CAF7-C199-4A46-8F72-A7BB00E7EC00",
   "Date": gettodaysdatewith_zeroformats()
 }
     payload = json.dumps(requestdata)
@@ -1377,7 +1463,54 @@ def test_PeopleByTeamId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Id": {
+                "type": "string"
+            },
+            "FirstName": {
+                "type": "string"
+            },
+            "LastName": {
+                "type": "string"
+            },
+            "EmploymentNumber": {
+                "type": "string"
+            },
+            "Email": {
+                "type": "string"
+            },
+            "DisplayName": {
+                "type": "string"
+            },
+            "TimeZoneId": {
+                "type": "string"
+            },
+            "BusinessUnitId": {
+                "type": "string"
+            },
+            "SiteId": {
+                "type": "string"
+            },
+            "TeamId": {
+                "type": "string"
+            },
+            "WorkflowControlSetId": {
+                "type": "string"
+            },
+            "FirstDayOfWeek": {
+                "type": "integer"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_PersonById():
     requestdata = {
@@ -1397,7 +1530,54 @@ def test_PersonById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "Id": {
+                "type": "string"
+            },
+            "FirstName": {
+                "type": "string"
+            },
+            "LastName": {
+                "type": "string"
+            },
+            "EmploymentNumber": {
+                "type": "string"
+            },
+            "Email": {
+                "type": "string"
+            },
+            "DisplayName": {
+                "type": "string"
+            },
+            "TimeZoneId": {
+                "type": "string"
+            },
+            "BusinessUnitId": {
+                "type": "string"
+            },
+            "SiteId": {
+                "type": "string"
+            },
+            "TeamId": {
+                "type": "string"
+            },
+            "WorkflowControlSetId": {
+                "type": "string"
+            },
+            "FirstDayOfWeek": {
+                "type": "integer"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.xfail(reason="known issue(if you set WFM_API_UseScope_91609 toggle to false and restart WFM system it works)")
 @pytest.mark.queries
 def test_ScheduleAbsencesByPersonIds():
@@ -1424,7 +1604,30 @@ def test_ScheduleAbsencesByPersonIds():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+        "type": "object",
+        "properties": {
+            "PersonId": {
+                "type": "string"
+            },
+            "Date": {
+                "type": "string"
+            },
+            "FullDayAbsence": {
+                "type": "null"
+            },
+            "Shift": {
+                "type": "array"
+            }
+        }
+    }
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_SchedulesByChangeDate():
     requestdata = {
@@ -1447,7 +1650,94 @@ def test_SchedulesByChangeDate():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "Schedules": [],
+            "Page": 0,
+            "TotalPages": 1,
+            "TotalSchedules": 0,
+            "ChangesUpTo": "2020-11-05T06:42:03.055Z"
+        }
+    ],
+    "required": [
+        "Schedules",
+        "Page",
+        "TotalPages",
+        "TotalSchedules",
+        "ChangesUpTo"
+    ],
+    "properties": {
+        "Schedules": {
+            "$id": "#/properties/Schedules",
+            "type": "array",
+            "title": "The Schedules schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                []
+            ],
+            "additionalItems": True,
+            "items": {
+                "$id": "#/properties/Schedules/items"
+            }
+        },
+        "Page": {
+            "$id": "#/properties/Page",
+            "type": "integer",
+            "title": "The Page schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                0
+            ]
+        },
+        "TotalPages": {
+            "$id": "#/properties/TotalPages",
+            "type": "integer",
+            "title": "The TotalPages schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1
+            ]
+        },
+        "TotalSchedules": {
+            "$id": "#/properties/TotalSchedules",
+            "type": "integer",
+            "title": "The TotalSchedules schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                0
+            ]
+        },
+        "ChangesUpTo": {
+            "$id": "#/properties/ChangesUpTo",
+            "type": "string",
+            "title": "The ChangesUpTo schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "2020-11-05T06:42:03.055Z"
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_AllScheduleChangesListenerSubscription():
     requestdata = {
@@ -1466,7 +1756,78 @@ def test_AllScheduleChangesListenerSubscription():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]["Listeners"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "Url": "http://localhost/TeleoptiWFM",
+            "Name": "jonhtest",
+            "DaysStartFromCurrentDate": 1,
+            "DaysEndFromCurrentDate": 4
+        }
+    ],
+    "required": [
+        "Url",
+        "Name",
+        "DaysStartFromCurrentDate",
+        "DaysEndFromCurrentDate"
+    ],
+    "properties": {
+        "Url": {
+            "$id": "#/properties/Url",
+            "type": "string",
+            "title": "The Url schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "http://localhost/TeleoptiWFM"
+            ]
+        },
+        "Name": {
+            "$id": "#/properties/Name",
+            "type": "string",
+            "title": "The Name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "jonhtest"
+            ]
+        },
+        "DaysStartFromCurrentDate": {
+            "$id": "#/properties/DaysStartFromCurrentDate",
+            "type": "integer",
+            "title": "The DaysStartFromCurrentDate schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1
+            ]
+        },
+        "DaysEndFromCurrentDate": {
+            "$id": "#/properties/DaysEndFromCurrentDate",
+            "type": "integer",
+            "title": "The DaysEndFromCurrentDate schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                4
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_ScheduleByPersonId():
     requestdata = {
@@ -1490,7 +1851,273 @@ def test_ScheduleByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "PersonId": "b0e35119-4661-4a1b-8772-9b5e015b2564",
+            "Date": "2020-10-06",
+            "Shift": [
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T08:00:00Z",
+                        "EndTime": "2020-10-06T10:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                },
+                {
+                    "Name": "Short break",
+                    "Period": {
+                        "StartTime": "2020-10-06T10:00:00Z",
+                        "EndTime": "2020-10-06T10:15:00Z"
+                    },
+                    "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -65536
+                },
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T10:15:00Z",
+                        "EndTime": "2020-10-06T12:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                },
+                {
+                    "Name": "Lunch",
+                    "Period": {
+                        "StartTime": "2020-10-06T12:00:00Z",
+                        "EndTime": "2020-10-06T13:00:00Z"
+                    },
+                    "ActivityId": "ba3624b0-0aea-4b72-a585-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -256
+                },
+                {
+                    "Name": "Administration",
+                    "Period": {
+                        "StartTime": "2020-10-06T13:00:00Z",
+                        "EndTime": "2020-10-06T15:00:00Z"
+                    },
+                    "ActivityId": "564b1a0c-4445-42d3-a24c-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -4144897
+                },
+                {
+                    "Name": "Short break",
+                    "Period": {
+                        "StartTime": "2020-10-06T15:00:00Z",
+                        "EndTime": "2020-10-06T15:15:00Z"
+                    },
+                    "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -65536
+                },
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T15:15:00Z",
+                        "EndTime": "2020-10-06T17:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                }
+            ]
+        }
+    ],
+    "required": [
+        "PersonId",
+        "Date",
+        "Shift"
+    ],
+    "properties": {
+        "PersonId": {
+            "$id": "#/properties/PersonId",
+            "type": "string",
+            "title": "The PersonId schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "b0e35119-4661-4a1b-8772-9b5e015b2564"
+            ]
+        },
+        "Date": {
+            "$id": "#/properties/Date",
+            "type": "string",
+            "title": "The Date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "2020-10-06"
+            ]
+        },
+        "Shift": {
+            "$id": "#/properties/Shift",
+            "type": "array",
+            "title": "The Shift schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "Name": "Phone",
+                        "Period": {
+                            "StartTime": "2020-10-06T08:00:00Z",
+                            "EndTime": "2020-10-06T10:00:00Z"
+                        },
+                        "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                        "AbsenceId": 'null',
+                        "DisplayColor": -8323200
+                    },
+                    {
+                        "Name": "Short break",
+                        "Period": {
+                            "StartTime": "2020-10-06T10:00:00Z",
+                            "EndTime": "2020-10-06T10:15:00Z"
+                        },
+                        "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                        "AbsenceId": 'null',
+                        "DisplayColor": -65536
+                    }
+                ]
+            ],
+            "additionalItems": True,
+            "items": {
+                "$id": "#/properties/Shift/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/Shift/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "Name": "Phone",
+                                "Period": {
+                                    "StartTime": "2020-10-06T08:00:00Z",
+                                    "EndTime": "2020-10-06T10:00:00Z"
+                                },
+                                "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                                "AbsenceId": 'null',
+                                "DisplayColor": -8323200
+                            }
+                        ],
+                        "required": [
+                            "Name",
+                            "Period",
+                            "ActivityId",
+                            "AbsenceId",
+                            "DisplayColor"
+                        ],
+                        "properties": {
+                            "Name": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/Name",
+                                "type": "string",
+                                "title": "The Name schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "Phone"
+                                ]
+                            },
+                            "Period": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/Period",
+                                "type": "object",
+                                "title": "The Period schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "StartTime": "2020-10-06T08:00:00Z",
+                                        "EndTime": "2020-10-06T10:00:00Z"
+                                    }
+                                ],
+                                "required": [
+                                    "StartTime",
+                                    "EndTime"
+                                ],
+                                "properties": {
+                                    "StartTime": {
+                                        "$id": "#/properties/Shift/items/anyOf/0/properties/Period/properties/StartTime",
+                                        "type": "string",
+                                        "title": "The StartTime schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "2020-10-06T08:00:00Z"
+                                        ]
+                                    },
+                                    "EndTime": {
+                                        "$id": "#/properties/Shift/items/anyOf/0/properties/Period/properties/EndTime",
+                                        "type": "string",
+                                        "title": "The EndTime schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "2020-10-06T10:00:00Z"
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": True
+                            },
+                            "ActivityId": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/ActivityId",
+                                "type": "string",
+                                "title": "The ActivityId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "0ffeb898-11bf-43fc-8104-9b5e015ab3c2"
+                                ]
+                            },
+                            "AbsenceId": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/AbsenceId",
+                                "type": "null",
+                                "title": "The AbsenceId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 'null',
+                                "examples": [
+                                    'null'
+                                ]
+                            },
+                            "DisplayColor": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/DisplayColor",
+                                "type": "integer",
+                                "title": "The DisplayColor schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0,
+                                "examples": [
+                                    -8323200
+                                ]
+                            }
+                        },
+                        "additionalProperties": True
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_ScheduleByPersonIds():
     requestdata = {
@@ -1516,13 +2143,278 @@ def test_ScheduleByPersonIds():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
-#The scenario ID in test below has to be added, cannot find one that works in a fresh installation
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "PersonId": "b0e35119-4661-4a1b-8772-9b5e015b2564",
+            "Date": "2020-10-06",
+            "Shift": [
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T08:00:00Z",
+                        "EndTime": "2020-10-06T10:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                },
+                {
+                    "Name": "Short break",
+                    "Period": {
+                        "StartTime": "2020-10-06T10:00:00Z",
+                        "EndTime": "2020-10-06T10:15:00Z"
+                    },
+                    "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -65536
+                },
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T10:15:00Z",
+                        "EndTime": "2020-10-06T12:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                },
+                {
+                    "Name": "Lunch",
+                    "Period": {
+                        "StartTime": "2020-10-06T12:00:00Z",
+                        "EndTime": "2020-10-06T13:00:00Z"
+                    },
+                    "ActivityId": "ba3624b0-0aea-4b72-a585-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -256
+                },
+                {
+                    "Name": "Administration",
+                    "Period": {
+                        "StartTime": "2020-10-06T13:00:00Z",
+                        "EndTime": "2020-10-06T15:00:00Z"
+                    },
+                    "ActivityId": "564b1a0c-4445-42d3-a24c-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -4144897
+                },
+                {
+                    "Name": "Short break",
+                    "Period": {
+                        "StartTime": "2020-10-06T15:00:00Z",
+                        "EndTime": "2020-10-06T15:15:00Z"
+                    },
+                    "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -65536
+                },
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T15:15:00Z",
+                        "EndTime": "2020-10-06T17:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                }
+            ]
+        }
+    ],
+    "required": [
+        "PersonId",
+        "Date",
+        "Shift"
+    ],
+    "properties": {
+        "PersonId": {
+            "$id": "#/properties/PersonId",
+            "type": "string",
+            "title": "The PersonId schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "b0e35119-4661-4a1b-8772-9b5e015b2564"
+            ]
+        },
+        "Date": {
+            "$id": "#/properties/Date",
+            "type": "string",
+            "title": "The Date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "2020-10-06"
+            ]
+        },
+        "Shift": {
+            "$id": "#/properties/Shift",
+            "type": "array",
+            "title": "The Shift schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "Name": "Phone",
+                        "Period": {
+                            "StartTime": "2020-10-06T08:00:00Z",
+                            "EndTime": "2020-10-06T10:00:00Z"
+                        },
+                        "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                        "AbsenceId": 'null',
+                        "DisplayColor": -8323200
+                    },
+                    {
+                        "Name": "Short break",
+                        "Period": {
+                            "StartTime": "2020-10-06T10:00:00Z",
+                            "EndTime": "2020-10-06T10:15:00Z"
+                        },
+                        "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                        "AbsenceId": 'null',
+                        "DisplayColor": -65536
+                    }
+                ]
+            ],
+            "additionalItems": True,
+            "items": {
+                "$id": "#/properties/Shift/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/Shift/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "Name": "Phone",
+                                "Period": {
+                                    "StartTime": "2020-10-06T08:00:00Z",
+                                    "EndTime": "2020-10-06T10:00:00Z"
+                                },
+                                "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                                "AbsenceId": 'null',
+                                "DisplayColor": -8323200
+                            }
+                        ],
+                        "required": [
+                            "Name",
+                            "Period",
+                            "ActivityId",
+                            "AbsenceId",
+                            "DisplayColor"
+                        ],
+                        "properties": {
+                            "Name": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/Name",
+                                "type": "string",
+                                "title": "The Name schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "Phone"
+                                ]
+                            },
+                            "Period": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/Period",
+                                "type": "object",
+                                "title": "The Period schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "StartTime": "2020-10-06T08:00:00Z",
+                                        "EndTime": "2020-10-06T10:00:00Z"
+                                    }
+                                ],
+                                "required": [
+                                    "StartTime",
+                                    "EndTime"
+                                ],
+                                "properties": {
+                                    "StartTime": {
+                                        "$id": "#/properties/Shift/items/anyOf/0/properties/Period/properties/StartTime",
+                                        "type": "string",
+                                        "title": "The StartTime schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "2020-10-06T08:00:00Z"
+                                        ]
+                                    },
+                                    "EndTime": {
+                                        "$id": "#/properties/Shift/items/anyOf/0/properties/Period/properties/EndTime",
+                                        "type": "string",
+                                        "title": "The EndTime schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "2020-10-06T10:00:00Z"
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": True
+                            },
+                            "ActivityId": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/ActivityId",
+                                "type": "string",
+                                "title": "The ActivityId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "0ffeb898-11bf-43fc-8104-9b5e015ab3c2"
+                                ]
+                            },
+                            "AbsenceId": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/AbsenceId",
+                                "type": "null",
+                                "title": "The AbsenceId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 'null',
+                                "examples": [
+                                    'null'
+                                ]
+                            },
+                            "DisplayColor": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/DisplayColor",
+                                "type": "integer",
+                                "title": "The DisplayColor schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0,
+                                "examples": [
+                                    -8323200
+                                ]
+                            }
+                        },
+                        "additionalProperties": True
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_ScheduleByTeamId():
     requestdata = {
-  "BusinessUnitId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
-  "TeamId": "1F795D99-A8B1-473B-BAD3-ABA500EF4D59",
+  "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
+  "TeamId": "B923CAF7-C199-4A46-8F72-A7BB00E7EC00",
   "Period": {
     "StartDate": gettodaysdatewith_zeroformats(),
     "EndDate": getdate30daysahead_zeroformats()
@@ -1543,6 +2435,273 @@ def test_ScheduleByTeamId():
         print(response.text.encode('utf8'))
     assert response.status_code == 200
 
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "PersonId": "b0e35119-4661-4a1b-8772-9b5e015b2564",
+            "Date": "2020-10-06",
+            "Shift": [
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T08:00:00Z",
+                        "EndTime": "2020-10-06T10:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                },
+                {
+                    "Name": "Short break",
+                    "Period": {
+                        "StartTime": "2020-10-06T10:00:00Z",
+                        "EndTime": "2020-10-06T10:15:00Z"
+                    },
+                    "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -65536
+                },
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T10:15:00Z",
+                        "EndTime": "2020-10-06T12:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                },
+                {
+                    "Name": "Lunch",
+                    "Period": {
+                        "StartTime": "2020-10-06T12:00:00Z",
+                        "EndTime": "2020-10-06T13:00:00Z"
+                    },
+                    "ActivityId": "ba3624b0-0aea-4b72-a585-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -256
+                },
+                {
+                    "Name": "Administration",
+                    "Period": {
+                        "StartTime": "2020-10-06T13:00:00Z",
+                        "EndTime": "2020-10-06T15:00:00Z"
+                    },
+                    "ActivityId": "564b1a0c-4445-42d3-a24c-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -4144897
+                },
+                {
+                    "Name": "Short break",
+                    "Period": {
+                        "StartTime": "2020-10-06T15:00:00Z",
+                        "EndTime": "2020-10-06T15:15:00Z"
+                    },
+                    "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -65536
+                },
+                {
+                    "Name": "Phone",
+                    "Period": {
+                        "StartTime": "2020-10-06T15:15:00Z",
+                        "EndTime": "2020-10-06T17:00:00Z"
+                    },
+                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                    "AbsenceId": 'null',
+                    "DisplayColor": -8323200
+                }
+            ]
+        }
+    ],
+    "required": [
+        "PersonId",
+        "Date",
+        "Shift"
+    ],
+    "properties": {
+        "PersonId": {
+            "$id": "#/properties/PersonId",
+            "type": "string",
+            "title": "The PersonId schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "b0e35119-4661-4a1b-8772-9b5e015b2564"
+            ]
+        },
+        "Date": {
+            "$id": "#/properties/Date",
+            "type": "string",
+            "title": "The Date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "2020-10-06"
+            ]
+        },
+        "Shift": {
+            "$id": "#/properties/Shift",
+            "type": "array",
+            "title": "The Shift schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "Name": "Phone",
+                        "Period": {
+                            "StartTime": "2020-10-06T08:00:00Z",
+                            "EndTime": "2020-10-06T10:00:00Z"
+                        },
+                        "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                        "AbsenceId": 'null',
+                        "DisplayColor": -8323200
+                    },
+                    {
+                        "Name": "Short break",
+                        "Period": {
+                            "StartTime": "2020-10-06T10:00:00Z",
+                            "EndTime": "2020-10-06T10:15:00Z"
+                        },
+                        "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                        "AbsenceId": 'null',
+                        "DisplayColor": -65536
+                    }
+                ]
+            ],
+            "additionalItems": True,
+            "items": {
+                "$id": "#/properties/Shift/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/Shift/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "Name": "Phone",
+                                "Period": {
+                                    "StartTime": "2020-10-06T08:00:00Z",
+                                    "EndTime": "2020-10-06T10:00:00Z"
+                                },
+                                "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                                "AbsenceId": 'null',
+                                "DisplayColor": -8323200
+                            }
+                        ],
+                        "required": [
+                            "Name",
+                            "Period",
+                            "ActivityId",
+                            "AbsenceId",
+                            "DisplayColor"
+                        ],
+                        "properties": {
+                            "Name": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/Name",
+                                "type": "string",
+                                "title": "The Name schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "Phone"
+                                ]
+                            },
+                            "Period": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/Period",
+                                "type": "object",
+                                "title": "The Period schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "StartTime": "2020-10-06T08:00:00Z",
+                                        "EndTime": "2020-10-06T10:00:00Z"
+                                    }
+                                ],
+                                "required": [
+                                    "StartTime",
+                                    "EndTime"
+                                ],
+                                "properties": {
+                                    "StartTime": {
+                                        "$id": "#/properties/Shift/items/anyOf/0/properties/Period/properties/StartTime",
+                                        "type": "string",
+                                        "title": "The StartTime schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "2020-10-06T08:00:00Z"
+                                        ]
+                                    },
+                                    "EndTime": {
+                                        "$id": "#/properties/Shift/items/anyOf/0/properties/Period/properties/EndTime",
+                                        "type": "string",
+                                        "title": "The EndTime schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "2020-10-06T10:00:00Z"
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": True
+                            },
+                            "ActivityId": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/ActivityId",
+                                "type": "string",
+                                "title": "The ActivityId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "0ffeb898-11bf-43fc-8104-9b5e015ab3c2"
+                                ]
+                            },
+                            "AbsenceId": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/AbsenceId",
+                                "type": "null",
+                                "title": "The AbsenceId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 'null',
+                                "examples": [
+                                    'null'
+                                ]
+                            },
+                            "DisplayColor": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/DisplayColor",
+                                "type": "integer",
+                                "title": "The DisplayColor schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0,
+                                "examples": [
+                                    -8323200
+                                ]
+                            }
+                        },
+                        "additionalProperties": True
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_AllShiftCategories():
     requestdata = {
@@ -1561,7 +2720,66 @@ def test_AllShiftCategories():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "Id": "ec7f6475-1ae7-4a94-83c1-9b5e015ab4c3",
+            "Name": "Night",
+            "ShortName": "NT"
+        }
+    ],
+    "required": [
+        "Id",
+        "Name",
+        "ShortName"
+    ],
+    "properties": {
+        "Id": {
+            "$id": "#/properties/Id",
+            "type": "string",
+            "title": "The Id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "ec7f6475-1ae7-4a94-83c1-9b5e015ab4c3"
+            ]
+        },
+        "Name": {
+            "$id": "#/properties/Name",
+            "type": "string",
+            "title": "The Name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Night"
+            ]
+        },
+        "ShortName": {
+            "$id": "#/properties/ShortName",
+            "type": "string",
+            "title": "The ShortName schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "NT"
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_AllSites():
     requestdata = {
@@ -1580,7 +2798,14 @@ def test_AllSites():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_AllTeamsWithAgents():
     requestdata = {
@@ -1603,7 +2828,54 @@ def test_AllTeamsWithAgents():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "Id": "e5f968d7-6f6d-407c-81d5-9b5e015ab495",
+            "Name": "London/Students"
+        }
+    ],
+    "required": [
+        "Id",
+        "Name"
+    ],
+    "properties": {
+        "Id": {
+            "$id": "#/properties/Id",
+            "type": "string",
+            "title": "The Id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "e5f968d7-6f6d-407c-81d5-9b5e015ab495"
+            ]
+        },
+        "Name": {
+            "$id": "#/properties/Name",
+            "type": "string",
+            "title": "The Name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "London/Students"
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_TeamById():
     requestdata = {
@@ -1623,7 +2895,54 @@ def test_TeamById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "Id": "e5f968d7-6f6d-407c-81d5-9b5e015ab495",
+            "Name": "London/Students"
+        }
+    ],
+    "required": [
+        "Id",
+        "Name"
+    ],
+    "properties": {
+        "Id": {
+            "$id": "#/properties/Id",
+            "type": "string",
+            "title": "The Id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "e5f968d7-6f6d-407c-81d5-9b5e015ab495"
+            ]
+        },
+        "Name": {
+            "$id": "#/properties/Name",
+            "type": "string",
+            "title": "The Name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "London/Students"
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_TeamsBySiteId():
     requestdata = {
@@ -1643,7 +2962,54 @@ def test_TeamsBySiteId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "Id": "e5f968d7-6f6d-407c-81d5-9b5e015ab495",
+            "Name": "London/Students"
+        }
+    ],
+    "required": [
+        "Id",
+        "Name"
+    ],
+    "properties": {
+        "Id": {
+            "$id": "#/properties/Id",
+            "type": "string",
+            "title": "The Id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "e5f968d7-6f6d-407c-81d5-9b5e015ab495"
+            ]
+        },
+        "Name": {
+            "$id": "#/properties/Name",
+            "type": "string",
+            "title": "The Name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "London/Students"
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_PermissionByPersonId():
     requestdata = {
@@ -1664,7 +3030,58 @@ def test_PermissionByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "HasFullAccess": False,
+            "TeamIds": []
+        }
+    ],
+    "required": [
+        "HasFullAccess",
+        "TeamIds"
+    ],
+    "properties": {
+        "HasFullAccess": {
+            "$id": "#/properties/HasFullAccess",
+            "type": "boolean",
+            "title": "The HasFullAccess schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": False,
+            "examples": [
+                False
+            ]
+        },
+        "TeamIds": {
+            "$id": "#/properties/TeamIds",
+            "type": "array",
+            "title": "The TeamIds schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                []
+            ],
+            "additionalItems": True,
+            "items": {
+                "$id": "#/properties/TeamIds/items"
+            }
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_AllTimeZones():
     requestdata = {
@@ -1683,7 +3100,42 @@ def test_AllTimeZones():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "TimeZone": "America/Denver"
+        }
+    ],
+    "required": [
+        "TimeZone"
+    ],
+    "properties": {
+        "TimeZone": {
+            "$id": "#/properties/TimeZone",
+            "type": "string",
+            "title": "The TimeZone schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "America/Denver"
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_UserById():
     requestdata = {
@@ -1702,7 +3154,90 @@ def test_UserById():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "Id": "b0e35119-4661-4a1b-8772-9b5e015b2564",
+            "FirstName": "Pierre",
+            "LastName": "Baldi",
+            "EmploymentNumber": "137567",
+            "Email": "behrooz.aghakhanian@teleopti.com"
+        }
+    ],
+    "required": [
+        "Id",
+        "FirstName",
+        "LastName",
+        "EmploymentNumber",
+        "Email"
+    ],
+    "properties": {
+        "Id": {
+            "$id": "#/properties/Id",
+            "type": "string",
+            "title": "The Id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "b0e35119-4661-4a1b-8772-9b5e015b2564"
+            ]
+        },
+        "FirstName": {
+            "$id": "#/properties/FirstName",
+            "type": "string",
+            "title": "The FirstName schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Pierre"
+            ]
+        },
+        "LastName": {
+            "$id": "#/properties/LastName",
+            "type": "string",
+            "title": "The LastName schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Baldi"
+            ]
+        },
+        "EmploymentNumber": {
+            "$id": "#/properties/EmploymentNumber",
+            "type": "string",
+            "title": "The EmploymentNumber schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "137567"
+            ]
+        },
+        "Email": {
+            "$id": "#/properties/Email",
+            "type": "string",
+            "title": "The Email schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "behrooz.aghakhanian@teleopti.com"
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_WeeklyMaxWorkTimeByPersonId():
     requestdata = {
@@ -1723,7 +3258,42 @@ def test_WeeklyMaxWorkTimeByPersonId():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "WeeklyMaxWorkTimeInMinute": 2880
+        }
+    ],
+    "required": [
+        "WeeklyMaxWorkTimeInMinute"
+    ],
+    "properties": {
+        "WeeklyMaxWorkTimeInMinute": {
+            "$id": "#/properties/WeeklyMaxWorkTimeInMinute",
+            "type": "integer",
+            "title": "The WeeklyMaxWorkTimeInMinute schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                2880
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_AllWorkflowControlSets():
     requestdata = {
@@ -1742,15 +3312,62 @@ def test_AllWorkflowControlSets():
     else:
         print(response.text.encode('utf8'))
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "Id": "55d92888-2e81-4fdc-8315-9d9d00a1e9e1",
+            "AbsenceRequestExpiredThreshold": 15
+        }
+    ],
+    "required": [
+        "Id",
+        "AbsenceRequestExpiredThreshold"
+    ],
+    "properties": {
+        "Id": {
+            "$id": "#/properties/Id",
+            "type": "string",
+            "title": "The Id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "55d92888-2e81-4fdc-8315-9d9d00a1e9e1"
+            ]
+        },
+        "AbsenceRequestExpiredThreshold": {
+            "$id": "#/properties/AbsenceRequestExpiredThreshold",
+            "type": "integer",
+            "title": "The AbsenceRequestExpiredThreshold schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                15
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 @pytest.mark.queries
 def test_WorkTimeByPersonId():
     requestdata = {
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
-  "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
+  "PersonId": "C6D9C037-46E8-4947-93B4-9B5E015B2564",
   "Period": {
     "StartDate": gettodaysdatewith_zeroformats(),
-    "EndDate": getdate30daysahead_zeroformats()
+    "EndDate": getdate7daysahead_zeroformats()
   }
 }
     payload = json.dumps(requestdata)
@@ -1767,5 +3384,76 @@ def test_WorkTimeByPersonId():
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
-    o = json.loads(response.text.encode('utf8'))
+    resp = json.loads(response.text.encode('utf8'))
+    dict = resp["Result"][0]
+    schema = {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "TotalWorkTimeInMinutes": 1350,
+            "TotalOverTimeInMinutes": 0,
+            "TotalContractTimeInMinutes": 1440,
+            "TotalPaidTimeInMinutes": 1440
+        }
+    ],
+    "required": [
+        "TotalWorkTimeInMinutes",
+        "TotalOverTimeInMinutes",
+        "TotalContractTimeInMinutes",
+        "TotalPaidTimeInMinutes"
+    ],
+    "properties": {
+        "TotalWorkTimeInMinutes": {
+            "$id": "#/properties/TotalWorkTimeInMinutes",
+            "type": "integer",
+            "title": "The TotalWorkTimeInMinutes schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1350
+            ]
+        },
+        "TotalOverTimeInMinutes": {
+            "$id": "#/properties/TotalOverTimeInMinutes",
+            "type": "integer",
+            "title": "The TotalOverTimeInMinutes schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                0
+            ]
+        },
+        "TotalContractTimeInMinutes": {
+            "$id": "#/properties/TotalContractTimeInMinutes",
+            "type": "integer",
+            "title": "The TotalContractTimeInMinutes schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1440
+            ]
+        },
+        "TotalPaidTimeInMinutes": {
+            "$id": "#/properties/TotalPaidTimeInMinutes",
+            "type": "integer",
+            "title": "The TotalPaidTimeInMinutes schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1440
+            ]
+        }
+    },
+    "additionalProperties": True
+}
+
+    err = Draft3Validator(schema)
+    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    print(errors)
+    validate(dict, schema)
 
