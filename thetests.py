@@ -117,12 +117,12 @@ def test_seleniumtogetAPItoken():
 '''
 
 #these test are commands
-'''with open('csvtestdata/test_AddAgent.csv') as f:
+with open('csvtestdata/test_AddAgent.csv') as f:
  reader = csv.reader(f)
  addAgentData= list(reader)
 @pytest.mark.command
-@pytest.mark.parametrize("TimeZoneId, Contract, ContractSchedule, PartTimePercentage, Role, WorkflowControlSet, ShiftBag, BudgetGroup ", addAgentData)
-def test_AddAgent(TimeZoneId, Contract, ContractSchedule, PartTimePercentage, Role, WorkflowControlSet, ShiftBag, BudgetGroup):
+@pytest.mark.parametrize("TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, BudgetGroup ", addAgentData)
+def test_AddAgent(TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, BudgetGroup):
 
      requestdata = {
   "TimeZoneId": TimeZoneId,
@@ -138,13 +138,13 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, PartTimePercentage, Ro
   "Team": "Stockholm 1",
   "Contract": Contract,
   "ContractSchedule": ContractSchedule,
-  "PartTimePercentage": PartTimePercentage,
+  "PartTimePercentage": '',
   #"Culture": "string",
   "Roles": [
-    Role
+    'Agent'
   ],
   "WorkflowControlSet": WorkflowControlSet,
-  "ShiftBag": ShiftBag,
+  "ShiftBag": '',
   "BudgetGroup": BudgetGroup,
   "FirstDayOfWeek": 0
 }
@@ -161,7 +161,7 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, PartTimePercentage, Ro
          print(response.text.encode('utf8'))
 
      assert response.status_code == 200
-'''
+
 
 with open('csvtestdata/test_AddFullDayAbsence.csv') as f:
  reader = csv.reader(f)
