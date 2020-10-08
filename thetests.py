@@ -121,8 +121,8 @@ with open('csvtestdata/test_AddAgent.csv') as f:
  reader = csv.reader(f)
  addAgentData= list(reader)
 @pytest.mark.command
-@pytest.mark.parametrize("TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, BudgetGroup ", addAgentData)
-def test_AddAgent(TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, BudgetGroup):
+@pytest.mark.parametrize("TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, BudgetGroup, PartTimePercentage ", addAgentData)
+def test_AddAgent(TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, BudgetGroup, PartTimePercentage):
 
      requestdata = {
   "TimeZoneId": TimeZoneId,
@@ -138,7 +138,7 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, Bu
   "Team": "Stockholm 1",
   "Contract": Contract,
   "ContractSchedule": ContractSchedule,
-  "PartTimePercentage": '',
+  "PartTimePercentage": PartTimePercentage,
   #"Culture": "string",
   "Roles": [
     'Agent'

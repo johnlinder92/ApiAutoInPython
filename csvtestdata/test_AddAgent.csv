@@ -1,11 +1,11 @@
-Europe/London,Full time Fixed staff,Full time 5 days/week,Default,Budget Group Front Office
-Europe/Moscow,Hourly Staff,Full time 5 days/week,Default,Budget Group Front Office
-Europe/Berlin,Fixed Staff 6h/day,Full time 5 days/week,Default,Budget Group Front Office
-Asia/Shanghai,Stores FT,Weekend staff,Default,Budget Group Front Office
-Asia/Singapore,BTS,Weekend staff,test3,Budget Group Front Office
-Asia/Dubai,Fixed Staff 6h/day,Part-time 4 days/week,test3,Budget Group Backoffice
-America/Los_Angeles,Fixed Staff 6h/day,Part-time 4 days/week,testing,Budget Group Backoffice
-America/Denver,Stores FT,Part-time 3 days/week,testing,Budget Group Backoffice
-America/New_York,BTS,Part-time 3 days/week,test4,Budget Group Backoffice
-Australia/Sydney,Hourly Staff,Full time 5 days/week,test4,Budget Group Backoffice
-Africa/Casablanca,Full time Fixed staff,BTS,Default,Budget Group Backoffice
+Europe/London,Full time Fixed staff,Full time 5 days/week,Default,Budget Group Front Office,100%
+Europe/Moscow,Hourly Staff,Full time 5 days/week,Default,Budget Group Front Office,100%
+Europe/Berlin,Fixed Staff 6h/day,Full time 5 days/week,Default,Budget Group Front Office,100%
+Asia/Shanghai,Stores FT,Weekend staff,Default,Budget Group Front Office,50%
+Asia/Singapore,BTS,Weekend staff,test3,Budget Group Front Office,50%
+Asia/Dubai,Fixed Staff 6h/day,Part-time 4 days/week,test3,Budget Group Backoffice,50%
+America/Los_Angeles,Fixed Staff 6h/day,Part-time 4 days/week,testing,Budget Group Backoffice,75%
+America/Denver,Stores FT,Part-time 3 days/week,testing,Budget Group Backoffice,75%
+America/New_York,BTS,Part-time 3 days/week,test4,Budget Group Backoffice,75%
+Australia/Sydney,Hourly Staff,Full time 5 days/week,test4,Budget Group Backoffice,75%
+Africa/Casablanca,Full time Fixed staff,BTS,Default,Budget Group Backoffice,100%
