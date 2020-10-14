@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from jsonschema import validate, Draft3Validator
 
 baseurl = "https://qaeurc05.teleopticloud.com/api"
-apitoken = "MmQwNDQ2NzExYjE0NDM0YWJiMmZmNTdjODZmNWFlNTg1OGY2NmRmMGQ3NTE0MmQ4ODgzMjdhYTA0YWU5ZWE0Nw=="
+apitoken = ""
 #date functions to make requests work over time
 def getdate30daysahead_zeroformats():
     now = datetime.datetime.now()
@@ -79,7 +79,7 @@ def getdate3daysahead_zeroformats():
 fullDayAbsenceRequestID = '8e793f5a-b4c8-40c1-9156-ac3d00bb51a9'
 overTimeRequestId = '30fadb41-90b5-48dd-832f-ac3e00c0e8a7'
 
-'''
+
 @pytest.mark.command
 @pytest.mark.queries
 @pytest.mark.runfirst
@@ -92,7 +92,7 @@ def test_seleniumtogetAPItoken():
     #chrome_options.add_argument("--headless")
 
     driver = webdriver.Chrome()
-    driver.get("https://qaeurc02.teleopticloud.com")
+    driver.get("https://qaeurc05.teleopticloud.com")
     driver.delete_all_cookies()
     driver.maximize_window()
     driver.find_element(By.ID, "webteamschedule").click()
@@ -109,18 +109,18 @@ def test_seleniumtogetAPItoken():
     driver.find_element(By.CSS_SELECTOR, ".ant-tabs-tab:nth-child(2)").click()
     driver.implicitly_wait(10)
     driver.find_element(By.CSS_SELECTOR, ".ant-input").click()
-    driver.find_element(By.CSS_SELECTOR, ".ant-input").send_keys("johnapiautomation2")
+    driver.find_element(By.CSS_SELECTOR, ".ant-input").send_keys("johnapiautomation")
+    driver.implicitly_wait(20)
+    driver.find_element(By.CSS_SELECTOR, ".ng-tns-c141-23 > .ng-star-inserted").click()
     driver.implicitly_wait(10)
-    driver.find_element(By.CSS_SELECTOR, ".ant-form-item-control-input-content > .ng-tns-c129-23").click()
-    driver.implicitly_wait(10)
-    driver.find_element(By.CSS_SELECTOR, ".ant-col > .ant-input").click()
+    driver.find_element(By.XPATH, "(//input[@type='text'])[6]").click()
 
     apitoken2 = clipboard.paste()
 
     driver.close()
     global apitoken
     apitoken = apitoken2
-'''
+
 
 #these test are commands
 with open('csvtestdata/test_AddAgent.csv') as f:

@@ -9,6 +9,7 @@ distlib==0.3.1
 filelock==3.0.12
 idna==2.10
 iniconfig==1.0.1
+jsonschema==3.2.0
 junit-xml==1.9
 more-itertools==8.5.0
 packaging==20.4
@@ -17,6 +18,7 @@ py==1.9.0
 py-cpuinfo==7.0.0
 pyparsing==2.4.7
 pyperclip==1.8.0
+pyrsistent==0.17.3
 pytest==6.0.2
 pytest-benchmark==3.2.3
 pytest-rerunfailures==9.1
