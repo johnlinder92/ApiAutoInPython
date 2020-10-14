@@ -11,8 +11,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from jsonschema import validate, Draft3Validator
 
-baseurl = "https://qaeurc02.teleopticloud.com/api"
-apitoken = "Y2JjYzk3ZmI4OWQ0NGYwZWJmYThjOTkyOTNlMTk2OWQ2NDZmNzA0ZDAzM2E0NWRlOWVlODM4ZTdmZTAyYTI0YQ=="
+baseurl = "https://qaeurc05.teleopticloud.com/api"
+apitoken = "MmQwNDQ2NzExYjE0NDM0YWJiMmZmNTdjODZmNWFlNTg1OGY2NmRmMGQ3NTE0MmQ4ODgzMjdhYTA0YWU5ZWE0Nw=="
 #date functions to make requests work over time
 def getdate30daysahead_zeroformats():
     now = datetime.datetime.now()
@@ -63,6 +63,12 @@ def gettodaysdatewith_zeroformats():
 def getdate7daysahead_zeroformats():
     now = datetime.datetime.now()
     diff = datetime.timedelta(days=7)
+    future = now + diff
+    result = future.strftime("%Y-%m-%d")
+    return result
+def getdate3daysahead_zeroformats():
+    now = datetime.datetime.now()
+    diff = datetime.timedelta(days=3)
     future = now + diff
     result = future.strftime("%Y-%m-%d")
     return result
@@ -121,8 +127,8 @@ with open('csvtestdata/test_AddAgent.csv') as f:
  reader = csv.reader(f)
  addAgentData= list(reader)
 @pytest.mark.command
-@pytest.mark.parametrize("TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, BudgetGroup, PartTimePercentage ", addAgentData)
-def test_AddAgent(TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, BudgetGroup, PartTimePercentage):
+@pytest.mark.parametrize("TimeZoneId, Contract, ContractSchedule, BudgetGroup, PartTimePercentage ", addAgentData)
+def test_AddAgent(TimeZoneId, Contract, ContractSchedule, BudgetGroup, PartTimePercentage):
 
      requestdata = {
   "TimeZoneId": TimeZoneId,
@@ -143,7 +149,7 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, WorkflowControlSet, Bu
   "Roles": [
     'Agent'
   ],
-  "WorkflowControlSet": WorkflowControlSet,
+  "WorkflowControlSet": "Default WCS",
   "ShiftBag": '',
   "BudgetGroup": BudgetGroup,
   "FirstDayOfWeek": 0
@@ -297,12 +303,12 @@ with open('csvtestdata/addorremovemeeting.csv') as f:
  for x in dataforaddmeeting:
     dataforremovemeeting.append(x[0])
 @pytest.mark.command
-@pytest.mark.parametrize("ExternalMeetingId, Title, StartMeetingHour, EndMeetingHour, ActivityId, TimeZoneId, ScenarioId", dataforaddmeeting)
-def test_AddMeeting(ExternalMeetingId, Title, StartMeetingHour, EndMeetingHour, ActivityId, TimeZoneId, ScenarioId):
+@pytest.mark.parametrize("ExternalMeetingId, Title, StartMeetingHour, EndMeetingHour, ActivityId, TimeZoneId", dataforaddmeeting)
+def test_AddMeeting(ExternalMeetingId, Title, StartMeetingHour, EndMeetingHour, ActivityId, TimeZoneId):
     requestdata = {
   "TimeZoneId": TimeZoneId,
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
-  "ScenarioId": ScenarioId,
+  "ScenarioId": "E21D813C-238C-4C3F-9B49-9B5E015AB432",
   "ExternalMeetingId":ExternalMeetingId,
   "Participants": [
     "B0E35119-4661-4A1B-8772-9B5E015B2564"
@@ -505,17 +511,17 @@ with open('csvtestdata/test_RemovePersonAbsence.csv') as f:
     reader = csv.reader(f)
     RemovePersonAbsenceData = list(reader)
 @pytest.mark.command
-@pytest.mark.parametrize("ScenarioId, TimeZoneId", RemovePersonAbsenceData)
-def test_RemovePersonAbsence(ScenarioId, TimeZoneId):
+@pytest.mark.parametrize("TimeZoneId, PersonId",  RemovePersonAbsenceData)
+def test_RemovePersonAbsence(TimeZoneId, PersonId):
     requestdata = {
   "TimeZoneId": TimeZoneId,
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
-  "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
+  "PersonId": PersonId,
   "Period": {
     "StartTime": gettodaysdatewith_zeroformats()+"T08:10:09.155Z",
     "EndTime": getdate30daysahead_zeroformats()+"T08:10:09.155Z"
   },
-  "ScenarioId": ScenarioId
+  "ScenarioId": "E21D813C-238C-4C3F-9B49-9B5E015AB432"
 }
     payload = json.dumps(requestdata)
     headers = {
@@ -742,6 +748,7 @@ def test_SetSchedulesForPerson_MultipleLayersOfActivitysWithinDateAndMultipleSch
 
     assert response.status_code == 200
 
+'''
 #The timezonestests are dependant on the users in https://qaeurc02.teleopticloud.com environment
 with open('csvtestdata/addorremovemeetingtimezones.csv') as f:
  reader = csv.reader(f)
@@ -809,7 +816,7 @@ def test_RemoveMeeting_Timezones(ExternalMeetingId):
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
-
+'''
 
 # below tests are queries
 @pytest.mark.queries
@@ -1833,8 +1840,8 @@ def test_ScheduleByPersonId():
     requestdata = {
   "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
   "Period": {
-    "StartDate": gettodaysdatewith_zeroformats(),
-    "EndDate": getdate60daysahead_zeroformats()
+    "StartDate": getdate7daysahead_zeroformats(),
+    "EndDate": getdate7daysahead_zeroformats()
   },
   "ScenarioId": "E21D813C-238C-4C3F-9B49-9B5E015AB432"
 }
@@ -1860,84 +1867,6 @@ def test_ScheduleByPersonId():
     "title": "The root schema",
     "description": "The root schema comprises the entire JSON document.",
     "default": {},
-    "examples": [
-        {
-            "PersonId": "b0e35119-4661-4a1b-8772-9b5e015b2564",
-            "Date": "2020-10-06",
-            "Shift": [
-                {
-                    "Name": "Phone",
-                    "Period": {
-                        "StartTime": "2020-10-06T08:00:00Z",
-                        "EndTime": "2020-10-06T10:00:00Z"
-                    },
-                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
-                    "AbsenceId": 'null',
-                    "DisplayColor": -8323200
-                },
-                {
-                    "Name": "Short break",
-                    "Period": {
-                        "StartTime": "2020-10-06T10:00:00Z",
-                        "EndTime": "2020-10-06T10:15:00Z"
-                    },
-                    "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
-                    "AbsenceId": 'null',
-                    "DisplayColor": -65536
-                },
-                {
-                    "Name": "Phone",
-                    "Period": {
-                        "StartTime": "2020-10-06T10:15:00Z",
-                        "EndTime": "2020-10-06T12:00:00Z"
-                    },
-                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
-                    "AbsenceId": 'null',
-                    "DisplayColor": -8323200
-                },
-                {
-                    "Name": "Lunch",
-                    "Period": {
-                        "StartTime": "2020-10-06T12:00:00Z",
-                        "EndTime": "2020-10-06T13:00:00Z"
-                    },
-                    "ActivityId": "ba3624b0-0aea-4b72-a585-9b5e015ab3c6",
-                    "AbsenceId": 'null',
-                    "DisplayColor": -256
-                },
-                {
-                    "Name": "Administration",
-                    "Period": {
-                        "StartTime": "2020-10-06T13:00:00Z",
-                        "EndTime": "2020-10-06T15:00:00Z"
-                    },
-                    "ActivityId": "564b1a0c-4445-42d3-a24c-9b5e015ab3c6",
-                    "AbsenceId": 'null',
-                    "DisplayColor": -4144897
-                },
-                {
-                    "Name": "Short break",
-                    "Period": {
-                        "StartTime": "2020-10-06T15:00:00Z",
-                        "EndTime": "2020-10-06T15:15:00Z"
-                    },
-                    "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
-                    "AbsenceId": 'null',
-                    "DisplayColor": -65536
-                },
-                {
-                    "Name": "Phone",
-                    "Period": {
-                        "StartTime": "2020-10-06T15:15:00Z",
-                        "EndTime": "2020-10-06T17:00:00Z"
-                    },
-                    "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
-                    "AbsenceId": 'null',
-                    "DisplayColor": -8323200
-                }
-            ]
-        }
-    ],
     "required": [
         "PersonId",
         "Date",
@@ -1961,7 +1890,7 @@ def test_ScheduleByPersonId():
             "description": "An explanation about the purpose of this instance.",
             "default": "",
             "examples": [
-                "2020-10-06"
+                "2020-10-09"
             ]
         },
         "Shift": {
@@ -1973,24 +1902,26 @@ def test_ScheduleByPersonId():
             "examples": [
                 [
                     {
-                        "Name": "Phone",
+                        "Name": "Administration",
                         "Period": {
-                            "StartTime": "2020-10-06T08:00:00Z",
-                            "EndTime": "2020-10-06T10:00:00Z"
+                            "StartTime": "2020-10-09T09:00:00Z",
+                            "EndTime": "2020-10-09T10:45:00Z"
                         },
-                        "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                        "ActivityId": "564b1a0c-4445-42d3-a24c-9b5e015ab3c6",
                         "AbsenceId": 'null',
-                        "DisplayColor": -8323200
+                        "DisplayColor": -4144897,
+                        "ExternalMeetingId": 'null'
                     },
                     {
                         "Name": "Short break",
                         "Period": {
-                            "StartTime": "2020-10-06T10:00:00Z",
-                            "EndTime": "2020-10-06T10:15:00Z"
+                            "StartTime": "2020-10-09T10:45:00Z",
+                            "EndTime": "2020-10-09T11:00:00Z"
                         },
                         "ActivityId": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
                         "AbsenceId": 'null',
-                        "DisplayColor": -65536
+                        "DisplayColor": -65536,
+                        "ExternalMeetingId": 'null'
                     }
                 ]
             ],
@@ -2006,14 +1937,15 @@ def test_ScheduleByPersonId():
                         "default": {},
                         "examples": [
                             {
-                                "Name": "Phone",
+                                "Name": "Administration",
                                 "Period": {
-                                    "StartTime": "2020-10-06T08:00:00Z",
-                                    "EndTime": "2020-10-06T10:00:00Z"
+                                    "StartTime": "2020-10-09T09:00:00Z",
+                                    "EndTime": "2020-10-09T10:45:00Z"
                                 },
-                                "ActivityId": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                                "ActivityId": "564b1a0c-4445-42d3-a24c-9b5e015ab3c6",
                                 "AbsenceId": 'null',
-                                "DisplayColor": -8323200
+                                "DisplayColor": -4144897,
+                                "ExternalMeetingId": 'null'
                             }
                         ],
                         "required": [
@@ -2021,7 +1953,8 @@ def test_ScheduleByPersonId():
                             "Period",
                             "ActivityId",
                             "AbsenceId",
-                            "DisplayColor"
+                            "DisplayColor",
+                            "ExternalMeetingId"
                         ],
                         "properties": {
                             "Name": {
@@ -2031,7 +1964,7 @@ def test_ScheduleByPersonId():
                                 "description": "An explanation about the purpose of this instance.",
                                 "default": "",
                                 "examples": [
-                                    "Phone"
+                                    "Administration"
                                 ]
                             },
                             "Period": {
@@ -2042,8 +1975,8 @@ def test_ScheduleByPersonId():
                                 "default": {},
                                 "examples": [
                                     {
-                                        "StartTime": "2020-10-06T08:00:00Z",
-                                        "EndTime": "2020-10-06T10:00:00Z"
+                                        "StartTime": "2020-10-09T09:00:00Z",
+                                        "EndTime": "2020-10-09T10:45:00Z"
                                     }
                                 ],
                                 "required": [
@@ -2058,7 +1991,7 @@ def test_ScheduleByPersonId():
                                         "description": "An explanation about the purpose of this instance.",
                                         "default": "",
                                         "examples": [
-                                            "2020-10-06T08:00:00Z"
+                                            "2020-10-09T09:00:00Z"
                                         ]
                                     },
                                     "EndTime": {
@@ -2068,7 +2001,7 @@ def test_ScheduleByPersonId():
                                         "description": "An explanation about the purpose of this instance.",
                                         "default": "",
                                         "examples": [
-                                            "2020-10-06T10:00:00Z"
+                                            "2020-10-09T10:45:00Z"
                                         ]
                                     }
                                 },
@@ -2081,7 +2014,7 @@ def test_ScheduleByPersonId():
                                 "description": "An explanation about the purpose of this instance.",
                                 "default": "",
                                 "examples": [
-                                    "0ffeb898-11bf-43fc-8104-9b5e015ab3c2"
+                                    "564b1a0c-4445-42d3-a24c-9b5e015ab3c6"
                                 ]
                             },
                             "AbsenceId": {
@@ -2101,7 +2034,17 @@ def test_ScheduleByPersonId():
                                 "description": "An explanation about the purpose of this instance.",
                                 "default": 0,
                                 "examples": [
-                                    -8323200
+                                    -4144897
+                                ]
+                            },
+                            "ExternalMeetingId": {
+                                "$id": "#/properties/Shift/items/anyOf/0/properties/ExternalMeetingId",
+                                "type": "null",
+                                "title": "The ExternalMeetingId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 'null',
+                                "examples": [
+                                    'null'
                                 ]
                             }
                         },
@@ -3360,14 +3303,15 @@ def test_AllWorkflowControlSets():
     errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
     print(errors)
     validate(dict, schema)
+@pytest.mark.xfail(reason="needs a schedule for the given person on the given period")
 @pytest.mark.queries
 def test_WorkTimeByPersonId():
     requestdata = {
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
-  "PersonId": "C6D9C037-46E8-4947-93B4-9B5E015B2564",
+  "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
   "Period": {
     "StartDate": gettodaysdatewith_zeroformats(),
-    "EndDate": getdate7daysahead_zeroformats()
+    "EndDate": getdate3daysahead_zeroformats()
   }
 }
     payload = json.dumps(requestdata)
