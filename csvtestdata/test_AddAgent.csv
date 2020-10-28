@@ -1,11 +1,11 @@
-Europe/London,Fixed staff 8h,Full time 5 days/week,Budget Group Front Office,100%
-Europe/Moscow,Hourly Staff,Full time 5 days/week,Budget Group Front Office,100%
-Europe/Berlin,Fixed staff 6h,Full time 5 days/week,Budget Group Front Office,100%
-Asia/Shanghai,Stores FT,Weekend staff,Budget Group Front Office,50%
-Asia/Singapore,BTS,Weekend staff,Budget Group Front Office,50%
-Asia/Dubai,Fixed staff 6h,Part-time 4 days/week,Budget Group Backoffice,50%
-America/Los_Angeles,Fixed staff 6h,Part-time 4 days/week,Budget Group Backoffice,75%
-America/Denver,Stores FT,Part-time 3 days/week,Budget Group Backoffice,75%
-America/New_York,BTS,Part-time 3 days/week,Budget Group Backoffice,75%
-Australia/Sydney,Hourly Staff,Full time 5 days/week,Budget Group Backoffice,75%
-Africa/Casablanca,Fixed staff 8h,Part-time 3 days/week,Budget Group Backoffice,100%
+Europe/London,Fixed Staff,4-3,test,100
+Europe/Moscow,Hourly Staff,4-3,test,100
+Europe/Berlin,Fixed staff Monthly,4-3,test,100
+Asia/Shanghai,Fixed staff Monthly,4-3,24 hour budget group,50%
+Asia/Singapore,Hourly Staff,4-3,24 hour budget group,50%
+Asia/Dubai,Hourly Staff,5-2,24 hour budget group,50%
+America/Los_Angeles,Hourly Staff,5-2,24 hour budget group,75%
+America/Denver,Fixed staff Monthly,5-2,Bill Gates budget,75%
+America/New_York,Fixed staff Monthly,5-2,Bill Gates budget,75%
+Australia/Sydney,Hourly Staff,5-2,Bill Gates budget,75%
+Africa/Casablanca,Fixed Staff,5-2,Bill Gates budget,100

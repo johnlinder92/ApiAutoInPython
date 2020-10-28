@@ -11,8 +11,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from jsonschema import validate, Draft3Validator
 
-baseurl = "https://qaeurc05.teleopticloud.com/api"
-apitoken = ""
+baseurl = "https://devtest-k8s.teleopticloud.com//api"
+apitoken = "NTc1YWM4ZjIzMmFmNDgyYmE1ZjViNDAyZmE2OTNiNzU0YjVkZDI1NjZkNGE0M2JmYjc4ODRlZGFjODAwMGFhMQ=="
 #date functions to make requests work over time
 def getdate30daysahead_zeroformats():
     now = datetime.datetime.now()
@@ -79,7 +79,7 @@ def getdate3daysahead_zeroformats():
 fullDayAbsenceRequestID = '8e793f5a-b4c8-40c1-9156-ac3d00bb51a9'
 overTimeRequestId = '30fadb41-90b5-48dd-832f-ac3e00c0e8a7'
 
-
+'''
 @pytest.mark.command
 @pytest.mark.queries
 @pytest.mark.runfirst
@@ -92,7 +92,7 @@ def test_seleniumtogetAPItoken():
     #chrome_options.add_argument("--headless")
 
     driver = webdriver.Chrome()
-    driver.get("https://qaeurc05.teleopticloud.com")
+    driver.get("https://devtest-k8s.teleopticloud.com/")
     driver.delete_all_cookies()
     driver.maximize_window()
     driver.find_element(By.ID, "webteamschedule").click()
@@ -121,7 +121,7 @@ def test_seleniumtogetAPItoken():
     global apitoken
     apitoken = apitoken2
 
-
+'''
 #these test are commands
 with open('csvtestdata/test_AddAgent.csv') as f:
  reader = csv.reader(f)
@@ -140,8 +140,8 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, BudgetGroup, PartTimeP
   "StartDate": gettodaysdatewith_zeroformats(),
   "ApplicationLogon": "",
   #"Identity": "Agent",
-  "Site": "Stockholm",
-  "Team": "Stockholm 1",
+  "Site": "London",
+  "Team": "Students",
   "Contract": Contract,
   "ContractSchedule": ContractSchedule,
   "PartTimePercentage": PartTimePercentage,
@@ -173,15 +173,15 @@ with open('csvtestdata/test_AddFullDayAbsence.csv') as f:
  reader = csv.reader(f)
  dataaddfulldayabsence= list(reader)
 @pytest.mark.command
-@pytest.mark.parametrize("AbsenceId, ScenarioId", dataaddfulldayabsence)
-def test_AddFullDayAbsence(AbsenceId,ScenarioId):
+@pytest.mark.parametrize("AbsenceId, PersonId", dataaddfulldayabsence)
+def test_AddFullDayAbsence(AbsenceId,PersonId):
 
      requestdata = {
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
-  "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
+  "PersonId": PersonId,
   "Date": getdate30daysahead_zeroformats(),
   "AbsenceId": AbsenceId,
-  "ScenarioId": ScenarioId
+  "ScenarioId": ""
 }
      payload = json.dumps(requestdata)
      headers = {
@@ -371,7 +371,7 @@ def test_AddOvertimeRequest(TimeZoneId,OverTimeType,Subject):
    requestdata = {
     "TimeZoneId": TimeZoneId,
     "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
-    "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
+    "PersonId": "E34730FD-9B4D-4572-961A-9B5E015B2564",
     "Period": {
         "StartTime":  gettodaysdatewith_zeroformats() + "T13:56:34.604Z",
         "EndTime":  gettodaysdatewith_zeroformats() + "T17:56:34.604Z"
@@ -416,8 +416,8 @@ with open('csvtestdata/test_AddPartDayAbsence.csv') as f:
     reader = csv.reader(f)
     addPartDayAbsenceData = list(reader)
 @pytest.mark.command
-@pytest.mark.parametrize("AbsenceId, ScenarioId, TimeZoneId", addPartDayAbsenceData)
-def test_AddPartDayAbsence(AbsenceId, ScenarioId, TimeZoneId):
+@pytest.mark.parametrize("AbsenceId, TimeZoneId", addPartDayAbsenceData)
+def test_AddPartDayAbsence(AbsenceId, TimeZoneId):
     requestdata = {
   "TimeZoneId": TimeZoneId,
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
@@ -427,7 +427,7 @@ def test_AddPartDayAbsence(AbsenceId, ScenarioId, TimeZoneId):
     "EndTime": getdate30daysahead_zeroformats()+"T16:06:03.698Z"
   },
   "AbsenceId": AbsenceId,
-  "ScenarioId": ScenarioId
+  "ScenarioId": ""
 }
     payload = json.dumps(requestdata)
 
@@ -475,7 +475,7 @@ def test_AddTeam():
     requestdata = {
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
   "TeamName": "Johnsteam",
-  "SiteId": "3C0B7719-557D-4B3A-B349-A7BB00E7E198"
+  "SiteId": "D970A45A-90FF-4111-BFE1-9B5E015AB45C"
 }
     payload = json.dumps(requestdata)
     headers = {
@@ -1033,50 +1033,229 @@ def test_AllActivities():
         print(response.text.encode('utf8'))
     assert response.status_code == 200
     resp = json.loads(response.text.encode('utf8'))
-    dict = resp["Result"][0]
+    #dict = resp["Result"][0]
     schema = {
-        "type": "object",
-        "properties": {
-            "Id": {
-                "type": "string"
-            },
-            "Name": {
-                "type": "string"
-            },
-            "InReadyTime": {
-                "type": "boolean"
-            },
-            "RequiresSkill": {
-                "type": "boolean"
-            },
-            "InWorkTime": {
-                "type": "boolean"
-            },
-            "InPaidTime": {
-                "type": "boolean"
-            },
-            "ReportLevelDetail": {
-                "type": "string"
-            },
-            "RequiresSeat": {
-                "type": "boolean"
-            },
-            "PayrollCode": {
-                "type": "string"
-            },
-            "AllowOverwrite": {
-                "type": "boolean"
-            },
-            "DisplayColor": {
-                "type": "string"
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    
+    "required": [
+        "Result",
+        "Message"
+    ],
+    "properties": {
+        "Result": {
+            "$id": "#/properties/Result",
+            "type": "array",
+            "title": "The Result schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "Id": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                        "Name": "Phone",
+                        "InReadyTime": True,
+                        "RequiresSkill": True,
+                        "InWorkTime": True,
+                        "InPaidTime": True,
+                        "ReportLevelDetail": "None",
+                        "RequiresSeat": False,
+                        "PayrollCode": 'null',
+                        "AllowOverwrite": True,
+                        "DisplayColor": "#00FF00FF"
+                    },
+                    {
+                        "Id": "90ea529a-eea0-4e22-80ab-9b5e015ab3c6",
+                        "Name": "Short break",
+                        "InReadyTime": False,
+                        "RequiresSkill": False,
+                        "InWorkTime": True,
+                        "InPaidTime": True,
+                        "ReportLevelDetail": "ShortBreak",
+                        "RequiresSeat": False,
+                        "PayrollCode": 'null',
+                        "AllowOverwrite": True,
+                        "DisplayColor": "#FF0000FF"
+                    }
+                ]
+            ],
+            "additionalItems": True,
+            "items": {
+                "$id": "#/properties/Result/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/Result/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "Id": "0ffeb898-11bf-43fc-8104-9b5e015ab3c2",
+                                "Name": "Phone",
+                                "InReadyTime": True,
+                                "RequiresSkill": True,
+                                "InWorkTime": True,
+                                "InPaidTime": True,
+                                "ReportLevelDetail": "None",
+                                "RequiresSeat": False,
+                                "PayrollCode": 'null',
+                                "AllowOverwrite": True,
+                                "DisplayColor": "#00FF00FF"
+                            }
+                        ],
+                        "required": [
+                            "Id",
+                            "Name",
+                            "InReadyTime",
+                            "RequiresSkill",
+                            "InWorkTime",
+                            "InPaidTime",
+                            "ReportLevelDetail",
+                            "RequiresSeat",
+                            "PayrollCode",
+                            "AllowOverwrite",
+                            "DisplayColor"
+                        ],
+                        "properties": {
+                            "Id": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/Id",
+                                "type": "string",
+                                "title": "The Id schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "0ffeb898-11bf-43fc-8104-9b5e015ab3c2"
+                                ]
+                            },
+                            "Name": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/Name",
+                                "type": "string",
+                                "title": "The Name schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "Phone"
+                                ]
+                            },
+                            "InReadyTime": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/InReadyTime",
+                                "type": "boolean",
+                                "title": "The InReadyTime schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": False,
+                                "examples": [
+                                    True
+                                ]
+                            },
+                            "RequiresSkill": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/RequiresSkill",
+                                "type": "boolean",
+                                "title": "The RequiresSkill schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": False,
+                                "examples": [
+                                    True
+                                ]
+                            },
+                            "InWorkTime": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/InWorkTime",
+                                "type": "boolean",
+                                "title": "The InWorkTime schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": False,
+                                "examples": [
+                                    True
+                                ]
+                            },
+                            "InPaidTime": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/InPaidTime",
+                                "type": "boolean",
+                                "title": "The InPaidTime schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": False,
+                                "examples": [
+                                    True
+                                ]
+                            },
+                            "ReportLevelDetail": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/ReportLevelDetail",
+                                "type": "string",
+                                "title": "The ReportLevelDetail schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "None"
+                                ]
+                            },
+                            "RequiresSeat": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/RequiresSeat",
+                                "type": "boolean",
+                                "title": "The RequiresSeat schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": False,
+                                "examples": [
+                                    False
+                                ]
+                            },
+                            "PayrollCode": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/PayrollCode",
+                                "type": ["null", "string"],
+                                "title": "The PayrollCode schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 'null',
+                                "examples": [
+                                    'null'
+                                ]
+                            },
+                            "AllowOverwrite": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/AllowOverwrite",
+                                "type": "boolean",
+                                "title": "The AllowOverwrite schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": False,
+                                "examples": [
+                                    True
+                                ]
+                            },
+                            "DisplayColor": {
+                                "$id": "#/properties/Result/items/anyOf/0/properties/DisplayColor",
+                                "type": "string",
+                                "title": "The DisplayColor schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "#00FF00FF"
+                                ]
+                            }
+                        },
+                        "additionalProperties": True
+                    }
+                ]
             }
+        },
+        "Message": {
+            "$id": "#/properties/Message",
+            "type": "null",
+            "title": "The Message schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 'null',
+            "examples": [
+                'null'
+            ]
         }
-    }
+    },
+    "additionalProperties": True
+}
 
     err = Draft3Validator(schema)
-    errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
+    errors = sorted(err.iter_errors(resp), key=lambda e: e.path)
     print(errors)
-    validate(dict, schema)
+    validate(resp, schema)
 @pytest.mark.queries
 def test_PermissionByPerson():
     requestdata = {
@@ -1272,7 +1451,8 @@ def test_OvertimeRequestConfigurationByPersonId():
                 "type": "integer"
             },
             "OpenPeriod": {
-                "type": "object"
+                "type": "object",
+                "type": "null"
             },
             "AutoGrant": {
                 "type": "object"
@@ -1454,7 +1634,7 @@ def test_PeopleByEmploymentNumbers():
 @pytest.mark.queries
 def test_PeopleByTeamId():
     requestdata = {
-  "TeamId": "B923CAF7-C199-4A46-8F72-A7BB00E7EC00",
+  "TeamId": "D66F60F5-264C-4277-80EB-9B5E015AB495",
   "Date": gettodaysdatewith_zeroformats()
 }
     payload = json.dumps(requestdata)
@@ -1585,7 +1765,7 @@ def test_PersonById():
     errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
     print(errors)
     validate(dict, schema)
-@pytest.mark.xfail(reason="known issue(if you set WFM_API_UseScope_91609 toggle to false and restart WFM system it works)")
+@pytest.mark.xfail(reason="known issue(if you set WFM_API_UseScope_91609 toggle to False and restart WFM system it works)")
 @pytest.mark.queries
 def test_ScheduleAbsencesByPersonIds():
     requestdata = {
@@ -2357,7 +2537,7 @@ def test_ScheduleByPersonIds():
 def test_ScheduleByTeamId():
     requestdata = {
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
-  "TeamId": "B923CAF7-C199-4A46-8F72-A7BB00E7EC00",
+  "TeamId": "D66F60F5-264C-4277-80EB-9B5E015AB495",
   "Period": {
     "StartDate": gettodaysdatewith_zeroformats(),
     "EndDate": getdate30daysahead_zeroformats()
@@ -2890,7 +3070,7 @@ def test_TeamById():
 def test_TeamsBySiteId():
     requestdata = {
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
-  "SiteId": "3C0B7719-557D-4B3A-B349-A7BB00E7E198"
+  "SiteId": "D970A45A-90FF-4111-BFE1-9B5E015AB45C"
 }
     payload = json.dumps(requestdata)
     headers = {
