@@ -10,9 +10,20 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from jsonschema import validate, Draft3Validator
-
+import pypyodbc
+import pandas as pd
+import re
+import sqlalchemy
+#baseurl = 'https://qaeurc05.teleopticloud.com/api'
+#apitoken ='YjY3ZjcyZDUzOGVjNGNmYmFiNDVmNzY2YTk0ZTBhNWY5NTYzYjcwMTU3ZmY0OWMyYmNjZmJkYzQ3MDFjYjQ5NQ=='
 baseurl = "https://devtest-k8s.teleopticloud.com//api"
 apitoken = "NTc1YWM4ZjIzMmFmNDgyYmE1ZjViNDAyZmE2OTNiNzU0YjVkZDI1NjZkNGE0M2JmYjc4ODRlZGFjODAwMGFhMQ=="
+
+#databaseconnection
+cnxn = pypyodbc.connect("Driver={SQL Server Native Client 11.0};"
+                             "Server=testcluster.database.windows.net;"
+                             "Database=testcluster_devtest_app;"
+                             "uid=TestCluster;pwd=X4vmfdZ9")
 #date functions to make requests work over time
 def getdate30daysahead_zeroformats():
     now = datetime.datetime.now()
@@ -79,6 +90,7 @@ def getdate3daysahead_zeroformats():
 fullDayAbsenceRequestID = '8e793f5a-b4c8-40c1-9156-ac3d00bb51a9'
 overTimeRequestId = '30fadb41-90b5-48dd-832f-ac3e00c0e8a7'
 
+#Seleniumtest to get API-token, not neccesary currently.
 '''
 @pytest.mark.command
 @pytest.mark.queries
@@ -122,6 +134,15 @@ def test_seleniumtogetAPItoken():
     apitoken = apitoken2
 
 '''
+
+def test_DatabaseConnection():
+    cnxn = pypyodbc.connect("Driver={SQL Server Native Client 11.0};"
+                            "Server=testcluster.database.windows.net;"
+                            "Database=testcluster_devtest_app;"
+                            "uid=TestCluster;pwd=X4vmfdZ9")
+    df = pd.read_sql_query("Select * from [dbo].[Person] where FirstName = 'JohnTest'", cnxn)
+    print(df)
+
 #these test are commands
 with open('csvtestdata/test_AddAgent.csv') as f:
  reader = csv.reader(f)
@@ -168,6 +189,29 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, BudgetGroup, PartTimeP
 
      assert response.status_code == 200
 
+
+     #regex to seperate id from wierd string returned by DB
+     dbid = str(pd.read_sql_query("SELECT TOP 1 Id FROM [dbo].[Person] ORDER BY ID DESC", cnxn))
+     idtemp= re.sub("id","", dbid)
+     idtemp2= re.sub("0  b", "",idtemp)
+     idtemp3= re.sub("\n", "", idtemp2)
+     id = re.sub("                                        ", "", idtemp3)
+
+     test = str(pd.read_sql_query("SELECT TOP 1 * FROM [dbo].[Person] ORDER BY ID DESC", cnxn))
+     print(test)
+
+     persontest= str(pd.read_sql_query("SELECT * FROM [dbo].[PersonAbsence] where Person ="+id, cnxn))
+     print(persontest)
+
+
+     dblastname = str(pd.read_sql_query("SELECT TOP 1 LastName FROM [dbo].[Person] ORDER BY ID DESC", cnxn))
+     dbfirstname = str(pd.read_sql_query("SELECT TOP 1 FirstName FROM [dbo].[Person] ORDER BY ID DESC", cnxn))
+
+     lastname = re.findall("TestJohn", dblastname)
+     firstname = re.findall("JohnTest", dbfirstname)
+
+     assert firstname == ['JohnTest']
+     assert lastname == ['TestJohn']
 
 with open('csvtestdata/test_AddFullDayAbsence.csv') as f:
  reader = csv.reader(f)
@@ -444,7 +488,7 @@ def test_AddPartDayAbsence(AbsenceId, TimeZoneId):
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
-#what does the URL mean/do? below
+
 @pytest.mark.command
 def test_AddScheduleChangesListener():
     requestdata = {
@@ -538,7 +582,62 @@ def test_RemovePersonAbsence(TimeZoneId, PersonId):
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
+'''
+#these requests currently under toggle
+@pytest.mark.command
+def test_RemoveFullDayAbsence():
+    requestdata = {
+            "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
+            "PersonId": "9D42C9BF-F766-473F-970C-9B5E015B2564",
+            "Period": {
+                "StartDate": gettodaysdatewith_zeroformats(),
+                "EndDate": getdate7daysahead_zeroformats()
+            },
+            "ScenarioId": ""
+        }
 
+
+    payload = json.dumps(requestdata)
+    headers = {
+        'Authorization': apitoken,
+        'Content-Type': 'application/json'
+    }
+    try:
+        response = requests.request("POST", baseurl + "/command/RemoveFullDayAbsence", headers=headers, data=payload)
+    except requests.exceptions.ConnectionError:
+        print("Internet connection down")
+    else:
+        print(response.text.encode('utf8'))
+
+    assert response.status_code == 200
+
+@pytest.mark.command
+def test_RemovePartDayAbsence():
+    requestdata = {
+            "TimeZoneId": 'Europe/London',
+            "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
+            "PersonId": '9D42C9BF-F766-473F-970C-9B5E015B2564',
+            "Period": {
+                "StartTime": gettodaysdatewith_zeroformats()+"T10:51:16.822Z",
+                "EndTime": getdate7daysahead_zeroformats()+"T10:51:16.822Z"
+            },
+            "ScenarioId": ""
+        }
+
+    payload = json.dumps(requestdata)
+    headers = {
+        'Authorization': apitoken,
+        'Content-Type': 'application/json'
+    }
+    try:
+        response = requests.request("POST", baseurl + "/command/RemovePartDayAbsence", headers=headers, data=payload)
+    except requests.exceptions.ConnectionError:
+        print("Internet connection down")
+    else:
+        print(response.text.encode('utf8'))
+
+    assert response.status_code == 200
+'''
 with open('csvtestdata/test_SetSchedulesForPerson.csv') as f:
     reader = csv.reader(f)
     SetSchedulesForPersonData = list(reader)
