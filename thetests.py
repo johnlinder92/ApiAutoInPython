@@ -197,11 +197,13 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, BudgetGroup, PartTimeP
      idtemp3= re.sub("\n", "", idtemp2)
      id = re.sub("                                        ", "", idtemp3)
 
+     #select everything from another db table using the id from the persontable.
+     persontest = str(pd.read_sql_query("SELECT * FROM [dbo].[PersonAbsence] where Person =" + id, cnxn))
+     print(persontest)
+
+     #select everything the easy way but doesn't work for other db tables
      test = str(pd.read_sql_query("SELECT TOP 1 * FROM [dbo].[Person] ORDER BY ID DESC", cnxn))
      print(test)
-
-     persontest= str(pd.read_sql_query("SELECT * FROM [dbo].[PersonAbsence] where Person ="+id, cnxn))
-     print(persontest)
 
 
      dblastname = str(pd.read_sql_query("SELECT TOP 1 LastName FROM [dbo].[Person] ORDER BY ID DESC", cnxn))
@@ -210,8 +212,9 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, BudgetGroup, PartTimeP
      lastname = re.findall("TestJohn", dblastname)
      firstname = re.findall("JohnTest", dbfirstname)
 
-     assert firstname == ['JohnTest']
+
      assert lastname == ['TestJohn']
+     assert firstname == ['JohnTest']
 
 with open('csvtestdata/test_AddFullDayAbsence.csv') as f:
  reader = csv.reader(f)
@@ -582,6 +585,7 @@ def test_RemovePersonAbsence(TimeZoneId, PersonId):
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
+
 '''
 #these requests currently under toggle
 @pytest.mark.command
@@ -618,8 +622,8 @@ def test_RemovePartDayAbsence():
             "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
             "PersonId": '9D42C9BF-F766-473F-970C-9B5E015B2564',
             "Period": {
-                "StartTime": gettodaysdatewith_zeroformats()+"T10:51:16.822Z",
-                "EndTime": getdate7daysahead_zeroformats()+"T10:51:16.822Z"
+                "StartTime": gettodaysdatewith_zeroformats()+"T10:51:00.200Z",
+                "EndTime": getdate7daysahead_zeroformats()+"T10:51:00.200Z"
             },
             "ScenarioId": ""
         }
@@ -638,6 +642,7 @@ def test_RemovePartDayAbsence():
 
     assert response.status_code == 200
 '''
+
 with open('csvtestdata/test_SetSchedulesForPerson.csv') as f:
     reader = csv.reader(f)
     SetSchedulesForPersonData = list(reader)
@@ -2109,6 +2114,11 @@ def test_AllScheduleChangesListenerSubscription():
     },
     "additionalProperties": True
 }
+
+
+
+
+
 
     err = Draft3Validator(schema)
     errors = sorted(err.iter_errors(dict), key=lambda e: e.path)
