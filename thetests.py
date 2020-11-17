@@ -645,8 +645,8 @@ def test_RemovePersonAbsence(TimeZoneId, PersonId):
 
     assert response.status_code == 200
 
-
-@pytest.mark.xfail(reason="Currently under toggle")
+#these two requests currently under toggle so doesnt work in this env.
+'''
 @pytest.mark.command
 def test_RemoveFullDayAbsence():
     requestdata = {
@@ -679,7 +679,7 @@ def test_RemoveFullDayAbsence():
 
     assert response.status_code == 200
 
-@pytest.mark.xfail(reason="Currently under toggle")
+
 @pytest.mark.command
 def test_RemovePartDayAbsence():
     requestdata = {
@@ -711,7 +711,7 @@ def test_RemovePartDayAbsence():
         file.close()
 
     assert response.status_code == 200
-
+'''
 
 with open('csvtestdata/test_SetSchedulesForPerson.csv') as f:
     reader = csv.reader(f)
@@ -932,6 +932,7 @@ def test_SetSchedulesForPerson_MultipleLayersOfActivitysWithinDateAndMultipleSch
 
     assert response.status_code == 200
 
+#these tests were to loop timezones. Not currently applicable
 '''
 #The timezonestests are dependant on the users in https://qaeurc02.teleopticloud.com environment
 with open('csvtestdata/addorremovemeetingtimezones.csv') as f:
