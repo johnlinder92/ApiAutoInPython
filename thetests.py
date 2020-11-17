@@ -191,12 +191,12 @@ def test_AddAgent(TimeZoneId, Contract, ContractSchedule, BudgetGroup, PartTimeP
      else:
          print(response.text.encode('utf8'))
 
-     assert response.status_code == 200
-
      if (response.status_code != 200):
          file = open("Failedresponses/Addagent" + gettodaysdatewith_zeroformats() + ".txt", "w")
          file.write(str(response.text.encode('utf8')))
          file.close()
+
+     assert response.status_code == 200
 
      #regex to seperate id from wierd string returned by DB
      dbid = str(pd.read_sql_query("SELECT TOP 1 Id FROM [dbo].[Person] ORDER BY ID DESC", cnxn))
@@ -250,12 +250,12 @@ def test_AddFullDayAbsence(AbsenceId,PersonId):
      else:
          print(response.text.encode('utf8'))
 
-     assert response.status_code == 200
-
      if (response.status_code != 200):
          file = open("Failedresponses/AddFullDayAbsence" + gettodaysdatewith_zeroformats() + ".txt", "w")
          file.write(str(response.text.encode('utf8')))
          file.close()
+
+     assert response.status_code == 200
 with open('csvtestdata/test_AddFullDayAbsenceRequest.csv') as f:
     reader = csv.reader(f)
     dataaddfulldayabsencerequest = list(reader)
@@ -292,12 +292,12 @@ def test_AddFullDayAbsenceRequest(AbsenceId,Subject):
 
     fullDayAbsenceRequestID = resp.get("Id")
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/AddFullDayAbsenceRequest"+gettodaysdatewith_zeroformats()+".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     schema = {
     "type": "object",
@@ -342,12 +342,12 @@ def test_AddIntradayAbsenceRequest(Subject,Message,TimeZoneID,AbsenceID):
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/AddIntradayAbsenceRequest" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     schema = {
@@ -406,12 +406,12 @@ def test_AddMeeting(ExternalMeetingId, Title, StartMeetingHour, EndMeetingHour, 
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/AddMeeting"+gettodaysdatewith_zeroformats()+".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 @pytest.mark.command
 @pytest.mark.parametrize("ExternalMeetingId", dataforremovemeeting)
 def test_RemoveMeeting(ExternalMeetingId):
@@ -432,12 +432,12 @@ def test_RemoveMeeting(ExternalMeetingId):
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/RemoveMeeting"+gettodaysdatewith_zeroformats()+".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 with open('csvtestdata/test_AddOvertimeRequest.csv') as f:
     reader = csv.reader(f)
@@ -477,12 +477,13 @@ def test_AddOvertimeRequest(TimeZoneId,OverTimeType,Subject):
    resp = json.loads(response.text.encode('utf8'))
    global overTimeRequestId
    overTimeRequestId = resp.get("Id")
-   assert response.status_code == 200
 
    if (response.status_code != 200):
        file = open("Failedresponses/AddOvertimeRequest" + gettodaysdatewith_zeroformats() + ".txt", "w")
        file.write(str(response.text.encode('utf8')))
        file.close()
+
+   assert response.status_code == 200
 
    schema = {
        "type": "object",
@@ -528,12 +529,12 @@ def test_AddPartDayAbsence(AbsenceId, TimeZoneId):
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/AddpartdayAbsence"+gettodaysdatewith_zeroformats()+".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 @pytest.mark.command
 def test_AddScheduleChangesListener():
@@ -558,12 +559,12 @@ def test_AddScheduleChangesListener():
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/AddScheduleChangesListener"+gettodaysdatewith_zeroformats()+".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 @pytest.mark.command
 def test_AddTeam():
@@ -586,12 +587,12 @@ def test_AddTeam():
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/AddTeam"+gettodaysdatewith_zeroformats()+".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     schema = {
@@ -637,12 +638,12 @@ def test_RemovePersonAbsence(TimeZoneId, PersonId):
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/RemovepersonAbsence"+gettodaysdatewith_zeroformats()+".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 
 @pytest.mark.xfail(reason="Currently under toggle")
@@ -671,12 +672,12 @@ def test_RemoveFullDayAbsence():
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/RemoveFullDayAbsence" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 @pytest.mark.xfail(reason="Currently under toggle")
 @pytest.mark.command
@@ -704,12 +705,12 @@ def test_RemovePartDayAbsence():
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/RemovePartDayAbsence" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 
 with open('csvtestdata/test_SetSchedulesForPerson.csv') as f:
@@ -760,12 +761,12 @@ def test_SetSchedulesForPerson(ScenarioId,TimeZoneId,ActivityId):
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/SetSchedulesForPerson" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 @pytest.mark.command
 @pytest.mark.parametrize("ScenarioId, TimeZoneId, ActivityId", SetSchedulesForPersonData)
@@ -924,12 +925,12 @@ def test_SetSchedulesForPerson_MultipleLayersOfActivitysWithinDateAndMultipleSch
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/SetSchedulesForPerson" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 '''
 #The timezonestests are dependant on the users in https://qaeurc02.teleopticloud.com environment
@@ -1021,12 +1022,12 @@ def test_AllAbsences():
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/AllAbsences" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1090,12 +1091,12 @@ def test_AbsencePossibilityByPersonId():
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/AbsencePossibilityByPersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
 @pytest.mark.queries
 def test_AbsenceRequestById():
@@ -1115,12 +1116,13 @@ def test_AbsenceRequestById():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AbsenceRequestById" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1189,12 +1191,13 @@ def test_AbsenceRequestRulesByPersonId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AbsenceRequestRulesByPersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]["Projection"][0]
@@ -1237,12 +1240,13 @@ def test_AllActivities():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllActivities" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     #dict = resp["Result"][0]
@@ -1486,12 +1490,13 @@ def test_PermissionByPerson():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/PermissionByPerson" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1529,12 +1534,13 @@ def test_AllBusinessUnits():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllBusinessUnits" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1571,12 +1577,13 @@ def test_AllDayOffTemplates():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllDayOffTemplates" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1618,12 +1625,13 @@ def test_OvertimePossibilityByPersonId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200 or 204
 
-    if (response.status_code != 200 or 204):
+    if (response.status_code != 200):
         file = open("Failedresponses/OvertimePossibilityByPersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200 or 204
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]["Period"]
@@ -1662,12 +1670,13 @@ def test_OvertimeRequestConfigurationByPersonId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/OvertimeRequestConfigurationBypersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1730,12 +1739,13 @@ def test_OvertimeRequestById():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/OvertimeRequestById" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1786,12 +1796,13 @@ def test_PersonAccountsByPersonId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/PersonAccountsByPersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1836,12 +1847,13 @@ def test_PeopleByEmploymentNumbers():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/PeopleByEmploymentNumbers" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1910,12 +1922,13 @@ def test_PeopleByTeamId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/PeopleByTeamId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -1983,12 +1996,13 @@ def test_PersonById():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/PersonById" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -2063,11 +2077,14 @@ def test_ScheduleAbsencesByPersonIds():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
+
     if (response.status_code != 200):
         file = open("Failedresponses/ScheduleAbsencesByPersonIds" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
+
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
     schema = {
@@ -2113,12 +2130,13 @@ def test_SchedulesByChangeDate():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/SchedulesByChangeDate" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -2225,12 +2243,13 @@ def test_AllScheduleChangesListenerSubscription():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllScheduleChangesListenerSubscription" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]["Listeners"][0]
@@ -2327,12 +2346,13 @@ def test_ScheduleByPersonId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/ScheduleByPersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -2561,12 +2581,13 @@ def test_ScheduleByPersonIds():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/ScheduleByPersonIds" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -2858,12 +2879,13 @@ def test_ScheduleByTeamId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/ScheduleByTeamId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3149,12 +3171,13 @@ def test_AllShiftCategories():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllShiftCategories" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3233,12 +3256,13 @@ def test_AllSites():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllSites" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3269,12 +3293,13 @@ def test_AllTeamsWithAgents():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllTeamsWithAgents" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3342,12 +3367,13 @@ def test_TeamById():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/TeambyId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3415,12 +3441,13 @@ def test_TeamsBySiteId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/TeamsBySiteId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3489,12 +3516,13 @@ def test_PermissionByPersonId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/PermissionByPersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3565,12 +3593,13 @@ def test_AllTimeZones():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllTimeZones" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3625,12 +3654,13 @@ def test_UserById():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/UserById" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3735,12 +3765,13 @@ def test_WeeklyMaxWorkTimeByPersonId():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/WeeklyMaxWorkTimeByPersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3795,12 +3826,13 @@ def test_AllWorkflowControlSets():
         print("Internet connection down")
     else:
         print(response.text.encode('utf8'))
-    assert response.status_code == 200
 
     if (response.status_code != 200):
         file = open("Failedresponses/AllWorkflowControlSets)" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
@@ -3874,12 +3906,14 @@ def test_WorkTimeByPersonId():
     else:
         print(response.text.encode('utf8'))
 
-    assert response.status_code == 200
-
     if (response.status_code != 200):
         file = open("Failedresponses/WorkTimeByPersonId" + gettodaysdatewith_zeroformats() + ".txt", "w")
         file.write(str(response.text.encode('utf8')))
         file.close()
+
+    assert response.status_code == 200
+
+
 
     resp = json.loads(response.text.encode('utf8'))
     dict = resp["Result"][0]
