@@ -14,16 +14,20 @@ import pypyodbc
 import pandas as pd
 import re
 import sqlalchemy
+import ssl
 #baseurl = 'https://qaeurc05.teleopticloud.com/api'
 #apitoken ='YjY3ZjcyZDUzOGVjNGNmYmFiNDVmNzY2YTk0ZTBhNWY5NTYzYjcwMTU3ZmY0OWMyYmNjZmJkYzQ3MDFjYjQ5NQ=='
 baseurl = "https://devtest-k8s.teleopticloud.com//api"
 apitoken = "NTc1YWM4ZjIzMmFmNDgyYmE1ZjViNDAyZmE2OTNiNzU0YjVkZDI1NjZkNGE0M2JmYjc4ODRlZGFjODAwMGFhMQ=="
 
+
 #databaseconnection
+
 cnxn = pypyodbc.connect("Driver={SQL Server Native Client 11.0};"
                              "Server=testcluster.database.windows.net;"
                              "Database=testcluster_devtest_app;"
                              "uid=TestCluster;pwd=X4vmfdZ9")
+
 #date functions to make requests work over time
 def getdate30daysahead_zeroformats():
     now = datetime.datetime.now()
@@ -307,8 +311,8 @@ def test_AddIntradayAbsenceRequest(Subject,Message,TimeZoneID,AbsenceID):
   "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
   "AbsenceId": AbsenceID,
   "Period": {
-    "StartTime": gettodaysdatewith_zeroformats() + "T16:57:48.068Z",
-    "EndTime": gettodaysdatewith_zeroformats() + "T17:57:48.068Z"
+    "StartTime": gettodaysdatewith_zeroformats() + "T16:57:00.000Z",
+    "EndTime": gettodaysdatewith_zeroformats() + "T17:57:00.000Z"
   },
   "Subject": Subject,
   "Message": Message
@@ -420,8 +424,8 @@ def test_AddOvertimeRequest(TimeZoneId,OverTimeType,Subject):
     "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
     "PersonId": "E34730FD-9B4D-4572-961A-9B5E015B2564",
     "Period": {
-        "StartTime":  gettodaysdatewith_zeroformats() + "T13:56:34.604Z",
-        "EndTime":  gettodaysdatewith_zeroformats() + "T17:56:34.604Z"
+        "StartTime":  gettodaysdatewith_zeroformats() + "T13:56:00.000Z",
+        "EndTime":  gettodaysdatewith_zeroformats() + "T17:56:00.000Z"
     },
     "Subject": Subject,
     "Message": "johnsabsence",
@@ -470,8 +474,8 @@ def test_AddPartDayAbsence(AbsenceId, TimeZoneId):
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
   "PersonId": "B0E35119-4661-4A1B-8772-9B5E015B2564",
   "Period": {
-    "StartTime": getdate30daysahead_zeroformats()+"T10:06:03.698Z",
-    "EndTime": getdate30daysahead_zeroformats()+"T16:06:03.698Z"
+    "StartTime": getdate30daysahead_zeroformats()+"T10:06:00.000Z",
+    "EndTime": getdate30daysahead_zeroformats()+"T16:06:00.000Z"
   },
   "AbsenceId": AbsenceId,
   "ScenarioId": ""
@@ -565,8 +569,8 @@ def test_RemovePersonAbsence(TimeZoneId, PersonId):
   "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
   "PersonId": PersonId,
   "Period": {
-    "StartTime": gettodaysdatewith_zeroformats()+"T08:10:09.155Z",
-    "EndTime": getdate30daysahead_zeroformats()+"T08:10:09.155Z"
+    "StartTime": gettodaysdatewith_zeroformats()+"T08:10:00.000Z",
+    "EndTime": getdate30daysahead_zeroformats()+"T08:10:00.000Z"
   },
   "ScenarioId": "E21D813C-238C-4C3F-9B49-9B5E015AB432"
 }
@@ -586,8 +590,8 @@ def test_RemovePersonAbsence(TimeZoneId, PersonId):
 
     assert response.status_code == 200
 
-'''
-#these requests currently under toggle
+
+@pytest.mark.xfail(reason="Currently under toggle")
 @pytest.mark.command
 def test_RemoveFullDayAbsence():
     requestdata = {
@@ -615,6 +619,7 @@ def test_RemoveFullDayAbsence():
 
     assert response.status_code == 200
 
+@pytest.mark.xfail(reason="Currently under toggle")
 @pytest.mark.command
 def test_RemovePartDayAbsence():
     requestdata = {
@@ -622,8 +627,8 @@ def test_RemovePartDayAbsence():
             "BusinessUnitId": "928DD0BC-BF40-412E-B970-9B5E015AADEA",
             "PersonId": '9D42C9BF-F766-473F-970C-9B5E015B2564',
             "Period": {
-                "StartTime": gettodaysdatewith_zeroformats()+"T10:51:00.200Z",
-                "EndTime": getdate7daysahead_zeroformats()+"T10:51:00.200Z"
+                "StartTime": gettodaysdatewith_zeroformats()+"T10:51:00.000Z",
+                "EndTime": getdate7daysahead_zeroformats()+"T10:51:00.000Z"
             },
             "ScenarioId": ""
         }
@@ -641,7 +646,7 @@ def test_RemovePartDayAbsence():
         print(response.text.encode('utf8'))
 
     assert response.status_code == 200
-'''
+
 
 with open('csvtestdata/test_SetSchedulesForPerson.csv') as f:
     reader = csv.reader(f)
